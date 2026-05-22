@@ -2,6 +2,23 @@
 
 A lightweight, distraction-free Chrome extension that transforms your default "New Tab" page into a sleek, personal productivity hub. Designed to help you stay organized, focused, and efficient every time you open a new tab.
 
+## Screenshots
+
+<table align="center">
+    <tr>
+        <td align="center">
+            <img src="./assets/dashboard-preview-dark-mode.png" alt="Dashboard in Dark Mode" width="450">
+        </td>
+        <td align="center">
+            <img src="./assets/dashboard-preview-light-mode.png" alt="Dashboard in Light Mode" width="450">
+        </td>
+    </tr>
+    <tr>
+        <td>Dark Mode</td>
+        <td>Light Mode</td>
+    </tr>
+</table>
+
 ## Features
 
 *   **Link Saver:** Bookmark and organize your favorite or frequently visited websites for quick access.
