@@ -9,7 +9,7 @@ A lightweight, distraction-free Chrome extension that transforms your default "N
 *   **To-Do List:** Manage daily tasks, track progress, and check off items to stay on top of your workflow.
 *   **Clean UI:** Minimalist and modern design crafted to reduce clutter and cognitive overload.
 
-## 🛠️ Built With
+## Built With
 
 *   HTML5
 *   CSS3
@@ -20,8 +20,8 @@ A lightweight, distraction-free Chrome extension that transforms your default "N
 
 1.  **Clone the repository:**
 ```bash
-    git clone [https://github.com/arquizade/new-tab-dashboard.git](https://github.com/arquizade/new-tab-dashboard.git)
-    ```
+git clone [https://github.com/arquizade/new-tab-dashboard.git](https://github.com/arquizade/new-tab-dashboard.git)
+```
 2.  Open Google Chrome and navigate to `chrome://extensions/`.
 3.  Enable **Developer mode** (toggle switch in the top right corner).
 4.  Click on **Load unpacked** in the top left corner.
