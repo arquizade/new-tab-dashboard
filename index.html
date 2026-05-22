@@ -1,285 +1,191 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>New Tab Dashboard</title>
-        <link rel="stylesheet" href="styles/style.css" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
-            rel="stylesheet"
-        />
-    </head>
-    <body>
-        <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-logo">
-                <div class="logo-mark">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 128 128"
-                        width="128"
-                        height="128"
-                        fill="none"
-                    >
-                        <path
-                            d="M24 18H20V14C20 12.9 19.1 12 18 12C16.9 12 16 12.9 16 14V18H12C10.9 18 10 18.9 10 20C10 21.1 10.9 22 12 22H16V26C16 27.1 16.9 28 18 28C19.1 28 20 27.1 20 26V22H24C25.1 22 26 21.1 26 20C26 18.9 25.1 18 24 18Z"
-                            fill="#26B3FC"
-                        />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Tab Dashboard</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+</head>
+<body>
 
-                        <path
-                            d="M93.7 70.8C81 74.4 74.4 81 70.8 93.7C67.7 104.7 60.3 104.7 57.2 93.7C53.6 81 47 74.4 34.3 70.8C23.3 67.7 23.3 60.3 34.3 57.2C47 53.6 53.6 47 57.2 34.3C60.3 23.3 67.7 23.3 70.8 34.3C74.4 47 81 53.6 93.7 57.2C104.7 60.3 104.7 67.7 93.7 70.8Z"
-                            fill="#1AD6F5"
-                        />
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">N</div>
+      <div class="logo-name">
+        New Tab
+        <span>Dashboard</span>
+      </div>
+    </div>
 
-                        <path
-                            d="M121.8 30.6C113 33.1 108.4 37.7 105.9 46.5C103.7 54.1 98.6 54.1 96.4 46.5C93.9 37.7 89.3 33.1 80.5 30.6C72.9 28.4 72.9 23.3 80.5 21.1C89.3 18.6 93.9 14 96.4 5.2C98.6 -2.4 103.7 -2.4 105.9 5.2C108.4 14 113 18.6 121.8 21.1C129.4 23.3 129.4 28.4 121.8 30.6Z"
-                            fill="#9CE9F9"
-                        />
+    <ul class="sidebar-nav">
+      <li>
+        <button class="nav-btn active" data-section="links" title="Quick Links">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"/>
+            <path d="M10.172 13.828a4 4 0 015.656 0l4 4a4 4 0 01-5.656 5.656l-1.102-1.101"/>
+          </svg>
+          <span>Links</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" data-section="todos" title="To-Do">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 12l2 2 4-4"/>
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+          </svg>
+          <span>To-Do</span>
+        </button>
+      </li>
+      <li>
+        <button class="nav-btn" data-section="notes" title="Notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/>
+            <path d="M17.586 3.414a2 2 0 112.828 2.828L12 14.828l-4 1 1-4 8.586-8.414z"/>
+          </svg>
+          <span>Notes</span>
+        </button>
+      </li>
+    </ul>
 
-                        <path
-                            d="M116.3 102.7C109.1 104.7 105.4 108.4 103.4 115.6C101.6 121.8 97.4 121.8 95.6 115.6C93.6 108.4 89.9 104.7 82.7 102.7C76.5 100.9 76.5 96.7 82.7 94.9C89.9 92.9 93.6 89.2 95.6 82C97.4 75.8 101.6 75.8 103.4 82C105.4 89.2 109.1 92.9 116.3 94.9C122.5 96.7 122.5 100.9 116.3 102.7Z"
-                            fill="#1BF2A7"
-                        />
-                    </svg>
-                </div>
-                <div class="logo-name">
-                    NewTab
-                    <span>Dashboard</span>
-                </div>
-            </div>
+    <div class="sidebar-time" id="sidebarTime">
+      <div class="time-display" id="timeDisplay">00:00</div>
+      <div class="date-display" id="dateDisplay">Mon, Jan 1</div>
+    </div>
 
-            <ul class="sidebar-nav">
-                <li>
-                    <button
-                        class="nav-btn active"
-                        data-section="links"
-                        title="Quick Links"
-                    >
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                        >
-                            <path
-                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"
-                            />
-                            <path
-                                d="M10.172 13.828a4 4 0 015.656 0l4 4a4 4 0 01-5.656 5.656l-1.102-1.101"
-                            />
-                        </svg>
-                        <span>Links</span>
-                    </button>
-                </li>
-                <li>
-                    <button class="nav-btn" data-section="todos" title="To-Do">
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                        >
-                            <path d="M9 12l2 2 4-4" />
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                        </svg>
-                        <span>To-Do</span>
-                    </button>
-                </li>
-                <li>
-                    <button class="nav-btn" data-section="notes" title="Notes">
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                        >
-                            <path
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"
-                            />
-                            <path
-                                d="M17.586 3.414a2 2 0 112.828 2.828L12 14.828l-4 1 1-4 8.586-8.414z"
-                            />
-                        </svg>
-                        <span>Notes</span>
-                    </button>
-                </li>
-            </ul>
+    <!-- Theme Toggle -->
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <!-- Moon icon (shown in dark mode) -->
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+        <!-- Sun icon (shown in light mode) -->
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <span class="theme-label" id="themeLabel">Dark</span>
+      </button>
+    </div>
+  </nav>
 
-            <div class="sidebar-time" id="sidebarTime">
-                <div class="time-display" id="timeDisplay">00:00</div>
-                <div class="date-display" id="dateDisplay">Mon, Jan 1</div>
-            </div>
+  <!-- Main Content -->
+  <main class="main" id="main">
 
-            <!-- Theme Toggle -->
-            <div class="sidebar-footer">
-                <button
-                    class="theme-toggle"
-                    id="themeToggle"
-                    title="Toggle theme"
-                >
-                    <!-- Moon icon (shown in dark mode) -->
-                    <svg
-                        class="icon-moon"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                    >
-                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                    </svg>
-                    <!-- Sun icon (shown in light mode) -->
-                    <svg
-                        class="icon-sun"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                    >
-                        <circle cx="12" cy="12" r="5" />
-                        <line x1="12" y1="1" x2="12" y2="3" />
-                        <line x1="12" y1="21" x2="12" y2="23" />
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                        <line x1="1" y1="12" x2="3" y2="12" />
-                        <line x1="21" y1="12" x2="23" y2="12" />
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                    </svg>
-                    <span class="theme-label" id="themeLabel">Dark</span>
-                </button>
-            </div>
-        </nav>
+    <!-- Links Section -->
+    <section class="section active" id="section-links">
+      <header class="section-header">
+        <h1>Quick Links</h1>
+        <div class="header-actions">
+          <!-- Layout toggle -->
+          <div class="layout-toggle" id="layoutToggle" title="Toggle layout">
+            <!-- Grid icon -->
+            <button class="layout-btn active" id="layoutGrid" data-layout="grid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+              </svg>
+            </button>
+            <!-- List icon -->
+            <button class="layout-btn" id="layoutList" data-layout="list">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <line x1="9" y1="6" x2="20" y2="6"/>
+                <line x1="9" y1="12" x2="20" y2="12"/>
+                <line x1="9" y1="18" x2="20" y2="18"/>
+                <circle cx="4.5" cy="6" r="1.5" fill="currentColor" stroke="none"/>
+                <circle cx="4.5" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+                <circle cx="4.5" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+              </svg>
+            </button>
+          </div>
+          <button class="btn-add" id="btnAddLink">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add Link
+          </button>
+        </div>
+      </header>
 
-        <!-- Main Content -->
-        <main class="main" id="main">
-            <!-- Links Section -->
-            <section class="section active" id="section-links">
-                <header class="section-header">
-                    <h1>Quick Links</h1>
-                    <button class="btn-add" id="btnAddLink">
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                        Add Link
-                    </button>
-                </header>
+      <div class="form-card hidden" id="formLink">
+        <input type="text" class="input" id="linkTitle" placeholder="Title" autocomplete="off" />
+        <input type="url" class="input" id="linkUrl" placeholder="https://..." autocomplete="off" />
+        <div class="form-actions">
+          <button class="btn-save" id="saveLinkBtn">Save</button>
+          <button class="btn-cancel" id="cancelLinkBtn">Cancel</button>
+        </div>
+      </div>
 
-                <div class="form-card hidden" id="formLink">
-                    <input
-                        type="text"
-                        class="input"
-                        id="linkTitle"
-                        placeholder="Title"
-                        autocomplete="off"
-                    />
-                    <input
-                        type="url"
-                        class="input"
-                        id="linkUrl"
-                        placeholder="https://..."
-                        autocomplete="off"
-                    />
-                    <div class="form-actions">
-                        <button class="btn-save" id="saveLinkBtn">Save</button>
-                        <button class="btn-cancel" id="cancelLinkBtn">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+      <div class="links-grid" id="linksGrid"></div>
+      <p class="empty-state hidden" id="linksEmpty">No links yet. Add your first one.</p>
+    </section>
 
-                <div class="links-grid" id="linksGrid"></div>
-                <p class="empty-state hidden" id="linksEmpty">
-                    No links yet. Add your first one.
-                </p>
-            </section>
+    <!-- Todos Section -->
+    <section class="section" id="section-todos">
+      <header class="section-header">
+        <h1>To-Do</h1>
+        <button class="btn-add" id="btnAddTodo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Task
+        </button>
+      </header>
 
-            <!-- Todos Section -->
-            <section class="section" id="section-todos">
-                <header class="section-header">
-                    <h1>To-Do</h1>
-                    <button class="btn-add" id="btnAddTodo">
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                        Add Task
-                    </button>
-                </header>
+      <div class="form-card hidden" id="formTodo">
+        <input type="text" class="input" id="todoText" placeholder="What needs doing?" autocomplete="off" />
+        <div class="form-actions">
+          <button class="btn-save" id="saveTodoBtn">Save</button>
+          <button class="btn-cancel" id="cancelTodoBtn">Cancel</button>
+        </div>
+      </div>
 
-                <div class="form-card hidden" id="formTodo">
-                    <input
-                        type="text"
-                        class="input"
-                        id="todoText"
-                        placeholder="What needs doing?"
-                        autocomplete="off"
-                    />
-                    <div class="form-actions">
-                        <button class="btn-save" id="saveTodoBtn">Save</button>
-                        <button class="btn-cancel" id="cancelTodoBtn">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+      <ul class="todo-list" id="todoList"></ul>
+      <p class="empty-state hidden" id="todosEmpty">No tasks. Enjoy the quiet.</p>
+    </section>
 
-                <ul class="todo-list" id="todoList"></ul>
-                <p class="empty-state hidden" id="todosEmpty">
-                    No tasks. Enjoy the quiet.
-                </p>
-            </section>
+    <!-- Notes Section -->
+    <section class="section" id="section-notes">
+      <header class="section-header">
+        <h1>Notes</h1>
+        <button class="btn-add" id="btnAddNote">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          New Note
+        </button>
+      </header>
 
-            <!-- Notes Section -->
-            <section class="section" id="section-notes">
-                <header class="section-header">
-                    <h1>Notes</h1>
-                    <button class="btn-add" id="btnAddNote">
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                        New Note
-                    </button>
-                </header>
+      <div class="form-card hidden" id="formNote">
+        <textarea class="input textarea" id="noteText" placeholder="Start writing..." rows="4"></textarea>
+        <div class="form-actions">
+          <button class="btn-save" id="saveNoteBtn">Save</button>
+          <button class="btn-cancel" id="cancelNoteBtn">Cancel</button>
+        </div>
+      </div>
 
-                <div class="form-card hidden" id="formNote">
-                    <textarea
-                        class="input textarea"
-                        id="noteText"
-                        placeholder="Start writing..."
-                        rows="4"
-                    ></textarea>
-                    <div class="form-actions">
-                        <button class="btn-save" id="saveNoteBtn">Save</button>
-                        <button class="btn-cancel" id="cancelNoteBtn">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
+      <div class="notes-list" id="notesList"></div>
+      <p class="empty-state hidden" id="notesEmpty">No notes yet.</p>
+    </section>
 
-                <div class="notes-list" id="notesList"></div>
-                <p class="empty-state hidden" id="notesEmpty">No notes yet.</p>
-            </section>
-        </main>
+  </main>
 
-        <script src="scripts/app.js"></script>
-    </body>
+  <script src="scripts/app.js"></script>
+</body>
 </html>

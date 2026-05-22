@@ -28,26 +28,82 @@ const storage = {
 /* ─── State ─────────────────────────────────────────────────── */
 
 let state = {
-  links: [],
-  todos: [],
-  notes: []
+  links:  [],
+  todos:  [],
+  notes:  [],
+  config: { theme: 'dark' }
 };
 
 async function loadState() {
-  const links = await storage.get('ntd-links');
-  const todos = await storage.get('ntd-todos');
-  const notes = await storage.get('ntd-notes');
-  state.links = links || [];
-  state.todos = todos || [];
-  state.notes = notes || [];
+  const links  = await storage.get('ntd-links');
+  const todos  = await storage.get('ntd-todos');
+  const notes  = await storage.get('ntd-notes');
+  const config = await storage.get('ntd-config');
+  state.links  = links  || [];
+  state.todos  = todos  || [];
+  state.notes  = notes  || [];
+  state.config = config || { theme: 'dark', linksLayout: 'grid' };
 }
 
-async function saveLinks()  { await storage.set('ntd-links', state.links); }
-async function saveTodos()  { await storage.set('ntd-todos', state.todos); }
-async function saveNotes()  { await storage.set('ntd-notes', state.notes); }
+async function saveLinks()  { await storage.set('ntd-links',   state.links); }
+async function saveTodos()  { await storage.set('ntd-todos',   state.todos); }
+async function saveNotes()  { await storage.set('ntd-notes',   state.notes); }
+async function saveConfig() { await storage.set('ntd-config',  state.config); }
 
 function genId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+/* ─── Theme ─────────────────────────────────────────────────── */
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const label = document.getElementById('themeLabel');
+  if (label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
+}
+
+function initTheme() {
+  applyTheme(state.config.theme);
+
+  document.getElementById('themeToggle').addEventListener('click', async () => {
+    state.config.theme = state.config.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(state.config.theme);
+    await saveConfig();
+  });
+}
+
+/* ─── Links Layout ───────────────────────────────────────────── */
+
+function applyLinksLayout(layout) {
+  const grid     = document.getElementById('linksGrid');
+  const btnGrid  = document.getElementById('layoutGrid');
+  const btnList  = document.getElementById('layoutList');
+
+  if (layout === 'list') {
+    grid.classList.add('layout-list');
+    btnList.classList.add('active');
+    btnGrid.classList.remove('active');
+  } else {
+    grid.classList.remove('layout-list');
+    btnGrid.classList.add('active');
+    btnList.classList.remove('active');
+  }
+}
+
+function initLinksLayout() {
+  applyLinksLayout(state.config.linksLayout || 'grid');
+
+  document.getElementById('layoutGrid').addEventListener('click', async () => {
+    state.config.linksLayout = 'grid';
+    applyLinksLayout('grid');
+    await saveConfig();
+  });
+
+  document.getElementById('layoutList').addEventListener('click', async () => {
+    state.config.linksLayout = 'list';
+    applyLinksLayout('list');
+    await saveConfig();
+  });
 }
 
 /* ─── Sidebar Navigation ────────────────────────────────────── */
@@ -376,6 +432,8 @@ function escapeHtml(str) {
 async function init() {
   await loadState();
 
+  initTheme();
+  initLinksLayout();
   initClock();
   initNav();
   initLinks();
