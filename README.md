@@ -37,7 +37,7 @@ A lightweight, distraction-free Chrome extension that transforms your default "N
 
 1.  **Clone the repository:**
 ```bash
-git clone [https://github.com/arquizade/new-tab-dashboard.git](https://github.com/arquizade/new-tab-dashboard.git)
+git clone https://github.com/arquizade/new-tab-dashboard.git
 ```
 2.  Open Google Chrome and navigate to `chrome://extensions/`.
 3.  Enable **Developer mode** (toggle switch in the top right corner).
@@ -45,6 +45,10 @@ git clone [https://github.com/arquizade/new-tab-dashboard.git](https://github.co
 5.  Select the project folder where `manifest.json` is located.
 6.  Open a new tab and enjoy your new dashboard!
 
-## 🔒 Privacy
+## Security & Privacy Notice
 
-All data (links, notes, and tasks) is stored locally within your browser using the Chrome Storage API. No data is sent to external servers.
+> **Important:** Please be mindful of the information you store in this dashboard. 
+
+* **Not an Encrypted Vault:** This extension is designed for quick notes, daily to-dos, and browser bookmarks. It **does not** encrypt data and is not a secure password manager or credential vault. 
+* **Sensitive Data:** Avoid storing sensitive or highly private information—such as passwords, credit card numbers, or API keys—in the text fields.
+* **Local Storage:** All data is saved directly to your local browser storage (`chrome.storage.local`). Your information never leaves your computer or passes through external servers, but anyone with physical access to your logged-in browser can see your dashboard.
