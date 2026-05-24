@@ -229,6 +229,10 @@ function initClock(): void {
 
 function getFavicon(url: string): string | null {
   try {
+    new URL(url);
+    if (typeof chrome !== "undefined" && chrome.runtime?.id) {
+      return `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(url)}&size=32`;
+    }
     const { hostname } = new URL(url);
     return `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
   } catch {
