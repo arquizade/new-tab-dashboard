@@ -173,23 +173,96 @@ function hideAllForms(): void {
   });
 }
 
+function clearLinksSearch(): void {
+  linksQuery = "";
+  const input = document.getElementById(
+    "linksSearch",
+  ) as HTMLInputElement | null;
+  const clear = document.getElementById("linksClearSearch");
+  if (input) input.value = "";
+  if (clear) clear.classList.add("hidden");
+}
+
+function switchSection(name: string): void {
+  document
+    .querySelectorAll<HTMLElement>(".nav-btn")
+    .forEach((b) => b.classList.remove("active"));
+  document
+    .querySelectorAll<HTMLElement>(".section")
+    .forEach((s) => s.classList.remove("active"));
+
+  const btn = document.querySelector<HTMLElement>(
+    `.nav-btn[data-section="${name}"]`,
+  );
+  if (btn) btn.classList.add("active");
+  el(`section-${name}`).classList.add("active");
+
+  if (name !== "links") clearLinksSearch();
+  hideAllForms();
+}
+
 function initNav(): void {
   document.querySelectorAll<HTMLButtonElement>(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const target = btn.dataset.section;
-
-      document
-        .querySelectorAll(".nav-btn")
-        .forEach((b) => b.classList.remove("active"));
-      document
-        .querySelectorAll(".section")
-        .forEach((s) => s.classList.remove("active"));
-
-      btn.classList.add("active");
-      if (target) el(`section-${target}`).classList.add("active");
-
-      hideAllForms();
+      if (btn.dataset.section) switchSection(btn.dataset.section);
     });
+  });
+}
+
+/* ─── Keyboard Shortcuts ────────────────────────────────────── */
+
+function initKeyboard(): void {
+  document.addEventListener("keydown", (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+    const inInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
+
+    if (e.key === "Escape") {
+      hideAllForms();
+      (document.activeElement as HTMLElement)?.blur();
+      return;
+    }
+
+    if (inInput) return;
+
+    const sectionKeys: Record<string, string> = {
+      "1": "links",
+      "2": "todos",
+      "3": "notes",
+    };
+    if (sectionKeys[e.key]) {
+      switchSection(sectionKeys[e.key]);
+      return;
+    }
+
+    if (e.key === "/") {
+      const active = document.querySelector<HTMLElement>(".section.active");
+      if (active?.id === "section-links") {
+        e.preventDefault();
+        el<HTMLInputElement>("linksSearch").focus();
+      }
+      return;
+    }
+
+    if (e.key === "a" || e.key === "A") {
+      const active = document.querySelector<HTMLElement>(".section.active");
+      if (!active) return;
+      const inputMap: Record<string, string> = {
+        "section-links": "linkTitle",
+        "section-todos": "todoText",
+        "section-notes": "noteText",
+      };
+      const formMap: Record<string, string> = {
+        "section-links": "formLink",
+        "section-todos": "formTodo",
+        "section-notes": "formNote",
+      };
+      const formId = formMap[active.id];
+      const inputId = inputMap[active.id];
+      if (!formId || !inputId) return;
+      e.preventDefault();
+      el(formId).classList.remove("hidden");
+      el(inputId).focus();
+    }
   });
 }
 
@@ -243,6 +316,7 @@ function getFavicon(url: string): string | null {
 /* ─── Drag-to-Reorder ───────────────────────────────────────── */
 
 let dragSrcId: string | null = null;
+let linksQuery: string = "";
 
 const DRAG_HANDLE_SVG = `
   <span class="drag-handle" aria-hidden="true">
@@ -325,13 +399,25 @@ function renderLinks(): void {
   const empty = el("linksEmpty");
   grid.innerHTML = "";
 
-  if (state.links.length === 0) {
+  const q = linksQuery.trim().toLowerCase();
+  const visible = q
+    ? state.links.filter(
+        (l) =>
+          l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q),
+      )
+    : state.links;
+
+  if (visible.length === 0) {
     empty.classList.remove("hidden");
+    empty.textContent =
+      state.links.length === 0
+        ? "No links yet. Add your first one."
+        : `No links match "${linksQuery.trim()}".`;
     return;
   }
   empty.classList.add("hidden");
 
-  state.links.forEach((link) => {
+  visible.forEach((link) => {
     const a = document.createElement("a");
     a.className = "link-card";
     a.href = link.url;
@@ -374,6 +460,31 @@ function renderLinks(): void {
   });
 }
 
+function initLinksSearch(): void {
+  const input = el<HTMLInputElement>("linksSearch");
+  const clearBtn = el("linksClearSearch");
+
+  input.addEventListener("input", () => {
+    linksQuery = input.value;
+    clearBtn.classList.toggle("hidden", !input.value);
+    renderLinks();
+  });
+
+  clearBtn.addEventListener("click", () => {
+    clearLinksSearch();
+    renderLinks();
+    input.focus();
+  });
+
+  input.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      clearLinksSearch();
+      renderLinks();
+      input.blur();
+    }
+  });
+}
+
 function initLinks(): void {
   const btnAdd = el("btnAddLink");
   const form = el("formLink");
@@ -384,11 +495,17 @@ function initLinks(): void {
 
   btnAdd.addEventListener("click", () => {
     form.classList.toggle("hidden");
-    if (!form.classList.contains("hidden")) inputTitle.focus();
+    form.classList.toggle("flex");
+
+    if (!form.classList.contains("hidden")) {
+      inputTitle.focus();
+    }
   });
 
   btnCancel.addEventListener("click", () => {
     form.classList.add("hidden");
+    form.classList.remove("flex");
+
     inputTitle.value = "";
     inputUrl.value = "";
   });
@@ -408,6 +525,7 @@ function initLinks(): void {
     inputTitle.value = "";
     inputUrl.value = "";
     form.classList.add("hidden");
+    form.classList.remove("flex");
   }
 
   btnSave.addEventListener("click", saveLink);
@@ -529,11 +647,16 @@ function initTodos(): void {
 
   btnAdd.addEventListener("click", () => {
     form.classList.toggle("hidden");
-    if (!form.classList.contains("hidden")) input.focus();
+    form.classList.toggle("flex");
+    if (!form.classList.contains("hidden")) {
+      input.focus();
+    }
   });
 
   btnCancel.addEventListener("click", () => {
     form.classList.add("hidden");
+    form.classList.remove("flex");
+
     input.value = "";
   });
 
@@ -547,6 +670,7 @@ function initTodos(): void {
 
     input.value = "";
     form.classList.add("hidden");
+    form.classList.remove("flex");
   }
 
   btnSave.addEventListener("click", saveTodo);
@@ -618,11 +742,13 @@ function initNotes(): void {
 
   btnAdd.addEventListener("click", () => {
     form.classList.toggle("hidden");
+    form.classList.toggle("flex");
     if (!form.classList.contains("hidden")) textarea.focus();
   });
 
   btnCancel.addEventListener("click", () => {
     form.classList.add("hidden");
+    form.classList.remove("flex");
     textarea.value = "";
   });
 
@@ -636,6 +762,7 @@ function initNotes(): void {
 
     textarea.value = "";
     form.classList.add("hidden");
+    form.classList.remove("flex");
   }
 
   btnSave.addEventListener("click", saveNote);
@@ -784,6 +911,8 @@ async function init(): Promise<void> {
   initLinksLayout();
   initClock();
   initNav();
+  initKeyboard();
+  initLinksSearch();
   initLinks();
   initTodos();
   initNotes();
