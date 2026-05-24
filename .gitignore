@@ -50,3 +50,6 @@ ENV/
 
 # Extension builds (if your zip script outputs a zip file in the root)
 *.zip
+
+# Vite cache directory
+.vite/
