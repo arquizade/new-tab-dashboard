@@ -1,0 +1,52 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build outputs
+dist/
+dist-ssr/
+*.local
+
+# Compiled TypeScript outputs
+*.tsbuildinfo
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+
+# Environment variables / Secrets
+.env
+.env.local
+.env.*.local
+
+# Python / Build script artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+ENV/
+
+# Extension builds (if your zip script outputs a zip file in the root)
+*.zip
