@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "zip": "npm run build && python3 scripts/zip-extension.py"
+    "typecheck": "tsc --noEmit",
+    "zip": "bun run build && python3 scripts/zip-extension.py"
   },
   "keywords": [],
   "author": "",
