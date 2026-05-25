@@ -1,54 +1,65 @@
 @import "tailwindcss";
 
-/* ─── Color Tokens ───────────────────────────────────────────── */
+/* ─── Islands Dark ────────────────────────────────────────────── */
+/*
+ * Canvas (#1a1b1e) is the deep background between panels.
+ * Surface (#222327) is the elevated island card above it.
+ * Separation comes from depth + shadow, not harsh borders.
+ * Rounded corners: 20px panels, 16px cards, 12px inputs, 8px items.
+ */
 :root,
 [data-theme="dark"] {
-    --bg: #111113;
-    --bg-subtle: #0d0d0f;
-    --surface: #18181b;
-    --surface-2: #202024;
-    --surface-3: #27272c;
-    --border: #2a2a30;
-    --border-mid: #343440;
-    --text-1: #ececee;
-    --text-2: #8e8e9a;
-    --text-3: #505060;
-    --accent: #b8f050;
-    --accent-soft: rgba(184, 240, 80, 0.1);
-    --accent-border: rgba(184, 240, 80, 0.22);
-    --accent-glow: rgba(184, 240, 80, 0.08);
-    --danger: #ff6b6b;
-    --danger-soft: rgba(255, 107, 107, 0.1);
-    --danger-border: rgba(255, 107, 107, 0.2);
+    --bg: #1a1b1e;
+    --bg-subtle: #16171a;
+    --surface: #222327;
+    --surface-2: #27282e;
+    --surface-3: #2d2e35;
+    --border: #32333b;
+    --border-mid: #3e3f4a;
+    --text-1: #dfe1e5;
+    --text-2: #8e909a;
+    --text-3: #52545f;
+    --accent: #4d8cf7;
+    --accent-soft: rgba(77, 140, 247, 0.12);
+    --accent-border: rgba(77, 140, 247, 0.25);
+    --accent-glow: rgba(77, 140, 247, 0.08);
+    --danger: #e06c75;
+    --danger-soft: rgba(224, 108, 117, 0.1);
+    --danger-border: rgba(224, 108, 117, 0.22);
     --shadow-sm:
-        0 1px 2px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.03);
+        0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
     --shadow-md:
-        0 4px 12px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03);
+        0 4px 14px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
     color-scheme: dark;
 }
 
+/* ─── Islands Light ───────────────────────────────────────────── */
+/*
+ * Canvas (#eceef2) is the warm grey sea between panels.
+ * Surface (#ffffff) is the crisp white island card above it.
+ */
 [data-theme="light"] {
-    --bg: #f0eff4;
-    --bg-subtle: #e8e7ee;
+    --bg: #eceef2;
+    --bg-subtle: #e4e6eb;
     --surface: #ffffff;
-    --surface-2: #f7f6fb;
-    --surface-3: #eeecf5;
-    --border: #e2e0ea;
-    --border-mid: #cac8d6;
-    --text-1: #16151a;
-    --text-2: #635f78;
-    --text-3: #a09cbf;
-    --accent: #5b3de8;
-    --accent-soft: rgba(91, 61, 232, 0.08);
-    --accent-border: rgba(91, 61, 232, 0.22);
-    --accent-glow: rgba(91, 61, 232, 0.1);
-    --danger: #d63030;
-    --danger-soft: rgba(214, 48, 48, 0.07);
-    --danger-border: rgba(214, 48, 48, 0.18);
+    --surface-2: #f5f6fa;
+    --surface-3: #eef0f5;
+    --border: #dcdee6;
+    --border-mid: #c8cad4;
+    --text-1: #1a1c20;
+    --text-2: #5a5d6e;
+    --text-3: #9ea1b0;
+    --accent: #3d7ef5;
+    --accent-soft: rgba(61, 126, 245, 0.09);
+    --accent-border: rgba(61, 126, 245, 0.24);
+    --accent-glow: rgba(61, 126, 245, 0.07);
+    --danger: #d1434e;
+    --danger-soft: rgba(209, 67, 78, 0.08);
+    --danger-border: rgba(209, 67, 78, 0.2);
     --shadow-sm:
-        0 1px 3px rgba(80, 60, 140, 0.07), 0 0 0 1px rgba(80, 60, 140, 0.05);
+        0 1px 3px rgba(26, 28, 32, 0.08), 0 0 0 1px rgba(26, 28, 32, 0.06);
     --shadow-md:
-        0 4px 16px rgba(80, 60, 140, 0.1), 0 0 0 1px rgba(80, 60, 140, 0.05);
+        0 4px 16px rgba(26, 28, 32, 0.11), 0 0 0 1px rgba(26, 28, 32, 0.07);
     color-scheme: light;
 }
 
@@ -70,6 +81,7 @@
     --font-sans: "DM Sans", sans-serif;
     --font-mono: "DM Mono", monospace;
 
+    /* Islands radii — generous rounding throughout */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -154,7 +166,7 @@
     .todo-checkbox:checked {
         background: var(--accent);
         border-color: var(--accent);
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23111' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: center;
     }
@@ -210,7 +222,12 @@
         gap: 6px;
     }
 
-    /* ─── Link Cards (dynamically rendered) ──────────────────── */
+    /* ─── Link Cards ─────────────────────────────────────────── */
+    /*
+     * Islands pattern: card sits on surface, separated from --bg
+     * by shadow + subtle border. Corner radius 20px matches the
+     * panel radius used across JetBrains Islands UI.
+     */
     .link-card {
         display: flex;
         flex-direction: column;
@@ -218,7 +235,7 @@
         padding: 16px;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: var(--radius-xl);
         text-decoration: none;
         color: inherit;
         position: relative;
@@ -327,7 +344,7 @@
         opacity: 1;
     }
 
-    /* ─── Todo Items (dynamically rendered) ──────────────────── */
+    /* ─── Todo Items ─────────────────────────────────────────── */
     .todo-item {
         display: flex;
         align-items: center;
@@ -335,7 +352,7 @@
         padding: 13px 16px;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
         position: relative;
         transition:
@@ -383,11 +400,15 @@
         color: var(--danger);
     }
 
-    /* ─── Note Cards (dynamically rendered) ──────────────────── */
+    /* ─── Note Cards ─────────────────────────────────────────── */
+    /*
+     * Notes use 20px radius (--radius-xl) to match the Islands
+     * panel rounding. Separation from background via shadow + border.
+     */
     .note-card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: var(--radius-xl);
         padding: 18px 22px;
         position: relative;
         box-shadow: var(--shadow-sm);
@@ -445,7 +466,7 @@
         filter: brightness(1.2);
     }
 
-    /* ─── Import Confirm (animation on reveal) ───────────────── */
+    /* ─── Import Confirm ─────────────────────────────────────── */
     .import-confirm:not(.hidden) {
         animation: fadeUp 150ms var(--ease-smooth) both;
     }
@@ -460,6 +481,113 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ─── Islands Layout ─────────────────────────────────────────── */
+/*
+ * The core Islands pattern:
+ * - body background (--bg) = the canvas / sea between panels
+ * - sidebar + main-content = islands floating on that canvas
+ * - Each section inside main = its own island panel
+ *
+ * We add padding to body so the canvas color shows as a
+ * visible gap around the sidebar and main panel.
+ */
+
+body {
+    padding: 10px;
+    gap: 10px;
+    background: var(--bg);
+}
+
+/* Sidebar island */
+nav#sidebar {
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
+    min-height: calc(100vh - 20px);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    /* Clip children to the rounded corners */
+    overflow: hidden;
+}
+
+/* Main content island */
+main#main {
+    margin-left: calc(216px + 10px); /* sidebar width + left offset + gap */
+    width: calc(100% - 216px - 30px);
+    min-height: calc(100vh - 20px);
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 40px 48px;
+    /* Smooth theme transition */
+    transition:
+        background 180ms var(--ease-smooth),
+        border-color 180ms var(--ease-smooth);
+}
+
+/* Each section is its own inner island panel */
+.section.active {
+    background: transparent; /* main panel IS the island */
+}
+
+/* Section header stays as-is — already well spaced */
+
+/* Search bar gets a slightly inset feel */
+#section-links .relative input {
+    background: var(--bg-subtle);
+}
+
+/* Forms sit slightly raised above the section surface */
+#formLink,
+#formTodo,
+#formNote {
+    background: var(--surface-2);
+    border-color: var(--border-mid);
+}
+
+/* Responsive adjustments to keep the island gap visible */
+@media (max-width: 860px) {
+    nav#sidebar {
+        left: 10px;
+        top: 10px;
+        bottom: 10px;
+    }
+    main#main {
+        margin-left: calc(180px + 20px);
+        width: calc(100% - 180px - 30px);
+        padding: 32px 28px;
+    }
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 8px;
+        gap: 8px;
+        flex-direction: column;
+    }
+
+    nav#sidebar {
+        position: relative;
+        top: auto;
+        left: auto;
+        bottom: auto;
+        min-height: auto;
+        height: auto;
+        width: 100%;
+        border-right: none;
+    }
+
+    main#main {
+        margin-left: 0;
+        width: 100%;
+        min-height: auto;
+        padding: 24px 20px;
+        border-radius: 16px;
     }
 }
 
@@ -604,42 +732,18 @@
 
 /* ─── Responsive ─────────────────────────────────────────────── */
 @media (min-width: 1400px) {
-    .main-content {
-        padding: 60px 80px;
+    main#main {
+        padding: 52px 72px;
     }
 }
 
 @media (max-width: 1100px) {
-    .main-content {
-        padding: 40px 40px;
-    }
-}
-
-@media (max-width: 860px) {
-    .sidebar-nav-area {
-        width: 180px;
-    }
-    .main-content {
-        margin-left: 180px;
-        width: calc(100% - 180px);
-        padding: 32px 28px;
+    main#main {
+        padding: 40px 36px;
     }
 }
 
 @media (max-width: 640px) {
-    .sidebar-nav-area {
-        width: 100%;
-        min-height: auto;
-        height: auto;
-        position: relative;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        padding: 12px 16px;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-    }
-
     .sidebar-logo-area {
         padding: 0;
         border-bottom: none;
@@ -650,6 +754,13 @@
     }
     .sidebar-footer-area {
         padding: 0;
+    }
+
+    .sidebar-nav-area {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 12px 16px;
     }
 
     .sidebar-nav-list {
@@ -663,6 +774,7 @@
     .sidebar-nav-list li {
         flex-shrink: 0;
     }
+
     .nav-btn-label,
     .theme-label,
     .btn-export-label,
@@ -676,17 +788,6 @@
     }
     .theme-btn {
         padding: 8px 10px;
-    }
-
-    body {
-        flex-direction: column;
-    }
-
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        padding: 24px 20px;
-        min-height: calc(100vh - 60px);
     }
 
     .links-grid {
