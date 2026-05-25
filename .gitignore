@@ -53,3 +53,7 @@ ENV/
 
 # Vite cache directory
 .vite/
+
+# AI
+.cursor
+CLAUDE.md
