@@ -8,14 +8,29 @@ import type { StorageAdapter } from "../types";
 
 /* ─── Favicon ────────────────────────────────────────────────── */
 
-function getFavicon(url: string): string | null {
+interface FaviconSources {
+  primary: string;
+  fallback: string;
+}
+
+/**
+ * Returns a primary URL (Chrome's _favicon API when inside the extension) and
+ * a fallback URL (Google S2 favicons) so the caller can swap on error.
+ */
+function getFavicon(url: string): FaviconSources | null {
   try {
-    new URL(url);
-    if (typeof chrome !== "undefined" && chrome.runtime?.id) {
-      return `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(url)}&size=32`;
-    }
     const { hostname } = new URL(url);
-    return `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+    const googleFallback = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+
+    if (typeof chrome !== "undefined" && chrome.runtime?.id) {
+      return {
+        primary: `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(url)}&size=32`,
+        fallback: googleFallback,
+      };
+    }
+
+    // Not running as an installed extension — use Google S2 directly for both
+    return { primary: googleFallback, fallback: googleFallback };
   } catch {
     return null;
   }
@@ -61,11 +76,6 @@ export function renderLinks(storage: StorageAdapter): void {
     a.target = "_blank";
     a.rel = "noopener noreferrer";
 
-    const favicon = getFavicon(link.url);
-    const faviconHtml = favicon
-      ? `<img class="link-card-favicon" src="${favicon}" alt="" onerror="this.style.display='none'" />`
-      : "";
-
     let displayUrl = "";
     try {
       displayUrl = new URL(link.url).hostname.replace("www.", "");
@@ -73,13 +83,35 @@ export function renderLinks(storage: StorageAdapter): void {
       displayUrl = link.url;
     }
 
+    // Build text/structure content without favicon (inline onerror violates CSP)
     a.innerHTML = `
       ${DRAG_HANDLE_SVG}
-      ${faviconHtml}
       <span class="link-card-title">${escapeHtml(link.title)}</span>
       <span class="link-card-url">${escapeHtml(displayUrl)}</span>
       <button class="card-delete" data-id="${link.id}" title="Remove">×</button>
     `;
+
+    // Attach favicon via DOM so we can use addEventListener instead of inline onerror.
+    // Try the Chrome _favicon API first; fall back to Google S2 on error.
+    // Only hide the image if the fallback also fails.
+    const favicon = getFavicon(link.url);
+    if (favicon) {
+      const img = document.createElement("img");
+      img.className = "link-card-favicon";
+      img.src = favicon.primary;
+      img.alt = "";
+      let triedFallback = false;
+      img.addEventListener("error", () => {
+        if (!triedFallback && img.src !== favicon.fallback) {
+          triedFallback = true;
+          img.src = favicon.fallback;
+        } else {
+          img.style.display = "none";
+        }
+      });
+      // Insert after the drag handle (index 0), before the title span (index 1)
+      a.insertBefore(img, a.children[1]);
+    }
 
     a.querySelector<HTMLButtonElement>(".card-delete")!.addEventListener(
       "click",

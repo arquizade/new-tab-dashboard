@@ -11,9 +11,9 @@
     "type": "module"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://www.google.com https://*.google.com https://*.googleusercontent.com data:; object-src 'self'"
+    "extension_pages": "script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' chrome-extension: https://www.google.com https://*.google.com https://*.googleusercontent.com data:; object-src 'self'; default-src 'self'"
   },
-  "permissions": ["storage", "tabs"],
+  "permissions": ["storage", "tabs", "favicon"],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
