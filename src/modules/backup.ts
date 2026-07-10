@@ -2,6 +2,7 @@ import { el } from "../utils/dom";
 import { state, saveLinks, saveTodos, saveNotes, saveConfig } from "../state";
 import { applyTheme } from "./theme";
 import { applyLinksLayout } from "./linksLayout";
+import { applyLinkOpenMode } from "./linkOpenMode";
 import { renderLinks } from "./links";
 import { renderTodos } from "./todos";
 import { renderNotes } from "./notes";
@@ -61,7 +62,12 @@ async function applyBackup(
   state.links = backup.links;
   state.todos = backup.todos;
   state.notes = backup.notes;
-  state.config = backup.config;
+  state.config = {
+    theme: backup.config.theme === "light" ? "light" : "dark",
+    linksLayout: backup.config.linksLayout === "list" ? "list" : "grid",
+    linkOpenMode:
+      backup.config.linkOpenMode === "sameTab" ? "sameTab" : "newTab",
+  };
 
   await Promise.all([
     saveLinks(storage),
@@ -72,6 +78,7 @@ async function applyBackup(
 
   applyTheme(state.config.theme);
   applyLinksLayout(state.config.linksLayout ?? "grid");
+  applyLinkOpenMode(state.config.linkOpenMode ?? "newTab");
   renderLinks(storage);
   renderTodos(storage);
   renderNotes(storage);

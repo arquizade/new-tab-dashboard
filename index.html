@@ -405,6 +405,51 @@
                                 </svg>
                             </button>
                         </div>
+                        <!-- Open mode toggle -->
+                        <div
+                            id="openModeToggle"
+                            title="Choose how links open"
+                            class="flex items-center bg-surface-3 border border-border rounded-xl p-[3px] gap-0.5"
+                        >
+                            <button
+                                id="openModeNewTab"
+                                data-mode="newTab"
+                                title="Open in new tab"
+                                class="open-mode-btn active w-[30px] h-[28px] flex items-center justify-center bg-transparent border-0 rounded-lg text-text-3 cursor-pointer hover:text-text-2 transition-[background,color] duration-[180ms]"
+                            >
+                                <svg
+                                    class="w-3.5 h-3.5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.75"
+                                >
+                                    <path
+                                        d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                                    />
+                                    <polyline points="15 3 21 3 21 9" />
+                                    <line x1="10" y1="14" x2="21" y2="3" />
+                                </svg>
+                            </button>
+                            <button
+                                id="openModeSameTab"
+                                data-mode="sameTab"
+                                title="Open in same tab"
+                                class="open-mode-btn w-[30px] h-[28px] flex items-center justify-center bg-transparent border-0 rounded-lg text-text-3 cursor-pointer hover:text-text-2 transition-[background,color] duration-[180ms]"
+                            >
+                                <svg
+                                    class="w-3.5 h-3.5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.75"
+                                >
+                                    <circle cx="12" cy="12" r="9" />
+                                    <line x1="12" y1="7" x2="12" y2="12" />
+                                    <line x1="12" y1="12" x2="16" y2="14" />
+                                </svg>
+                            </button>
+                        </div>
                         <!-- Add link -->
                         <button
                             id="btnAddLink"

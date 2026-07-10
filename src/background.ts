@@ -14,6 +14,7 @@ chrome.runtime.onInstalled.addListener((details) => {
           "ntd-config": {
             theme: "dark",
             linksLayout: "grid",
+            linkOpenMode: "newTab",
           },
         });
       }

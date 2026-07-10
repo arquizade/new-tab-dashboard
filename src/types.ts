@@ -21,6 +21,7 @@ export interface Note {
 export interface Config {
   theme: "dark" | "light";
   linksLayout: "grid" | "list";
+  linkOpenMode: "newTab" | "sameTab";
 }
 
 export interface AppState {

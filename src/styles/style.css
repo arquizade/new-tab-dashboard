@@ -209,6 +209,13 @@
         box-shadow: var(--shadow-sm);
     }
 
+    /* Open-mode toggle active state */
+    .open-mode-btn.active {
+        background: var(--surface) !important;
+        color: var(--text-1) !important;
+        box-shadow: var(--shadow-sm);
+    }
+
     /* ─── Links Grid ─────────────────────────────────────────── */
     .links-grid {
         display: grid;

@@ -2,6 +2,7 @@ import { createStorageAdapter } from "./storage";
 import { loadState } from "./state";
 import { initTheme } from "./modules/theme";
 import { initLinksLayout } from "./modules/linksLayout";
+import { initLinkOpenMode } from "./modules/linkOpenMode";
 import { initClock } from "./modules/clock";
 import { initNav } from "./modules/nav";
 import { initKeyboard } from "./modules/keyboard";
@@ -25,6 +26,7 @@ async function init(): Promise<void> {
 
   initTheme(storage);
   initLinksLayout(storage);
+  initLinkOpenMode(storage);
   initClock();
   initNav(resetLinksQuery);
 

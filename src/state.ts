@@ -19,6 +19,7 @@ const KEYS = {
 const DEFAULT_CONFIG: Config = {
   theme: "dark",
   linksLayout: "grid",
+  linkOpenMode: "newTab",
 };
 
 /* ─── State Singleton ────────────────────────────────────────── */
@@ -43,7 +44,7 @@ export async function loadState(storage: StorageAdapter): Promise<void> {
   state.links = links ?? [];
   state.todos = todos ?? [];
   state.notes = notes ?? [];
-  state.config = config ?? { ...DEFAULT_CONFIG };
+  state.config = { ...DEFAULT_CONFIG, ...config };
 }
 
 /* ─── Persist ────────────────────────────────────────────────── */

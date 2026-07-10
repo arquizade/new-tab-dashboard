@@ -73,7 +73,11 @@ export function renderLinks(storage: StorageAdapter): void {
     const a = document.createElement("a");
     a.className = "link-card";
     a.href = link.url;
-    a.target = "_blank";
+    if (state.config.linkOpenMode === "sameTab") {
+      a.removeAttribute("target");
+    } else {
+      a.target = "_blank";
+    }
     a.rel = "noopener noreferrer";
 
     let displayUrl = "";
