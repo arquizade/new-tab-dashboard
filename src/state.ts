@@ -20,7 +20,28 @@ const DEFAULT_CONFIG: Config = {
   theme: "dark",
   linksLayout: "grid",
   linkOpenMode: "newTab",
+  todosView: "list",
 };
+
+/* ─── Migration ──────────────────────────────────────────────── */
+
+const VALID_STATUSES = new Set(["todo", "inProgress", "review", "done"]);
+
+/**
+ * Older backups/storage may contain todos with a boolean `completed`
+ * field instead of `status`. Normalize everything to the new shape.
+ */
+function migrateTodos(rawTodos: unknown[]): Todo[] {
+  return rawTodos.map((raw) => {
+    const t = raw as Partial<Todo> & { completed?: boolean };
+    const status = VALID_STATUSES.has(t.status as string)
+      ? (t.status as Todo["status"])
+      : t.completed
+        ? "done"
+        : "todo";
+    return { id: t.id ?? "", text: t.text ?? "", status };
+  });
+}
 
 /* ─── State Singleton ────────────────────────────────────────── */
 
@@ -42,7 +63,7 @@ export async function loadState(storage: StorageAdapter): Promise<void> {
   ]);
 
   state.links = links ?? [];
-  state.todos = todos ?? [];
+  state.todos = migrateTodos(todos ?? []);
   state.notes = notes ?? [];
   state.config = { ...DEFAULT_CONFIG, ...config };
 }

@@ -6,10 +6,12 @@ export interface Link {
   url: string;
 }
 
+export type TodoStatus = "todo" | "inProgress" | "review" | "done";
+
 export interface Todo {
   id: string;
   text: string;
-  completed: boolean;
+  status: TodoStatus;
 }
 
 export interface Note {
@@ -22,6 +24,7 @@ export interface Config {
   theme: "dark" | "light";
   linksLayout: "grid" | "list";
   linkOpenMode: "newTab" | "sameTab";
+  todosView: "list" | "kanban";
 }
 
 export interface AppState {

@@ -4,11 +4,33 @@ import { addDragHandlers, reorderItems, DRAG_HANDLE_SVG } from "../utils/drag";
 import { state, saveTodos } from "../state";
 import { registerShortcut } from "./keyboard";
 import { showToast } from "./toast";
-import type { StorageAdapter } from "../types";
+import { renderTodoKanban } from "./todosKanban";
+import type { StorageAdapter, TodoStatus } from "../types";
+
+/* ─── Status Pill ────────────────────────────────────────────── */
+
+const STATUS_LABELS: Record<TodoStatus, string> = {
+  todo: "To-Do",
+  inProgress: "In Progress",
+  review: "Review",
+  done: "Done",
+};
+
+function statusPillHtml(status: TodoStatus): string {
+  return `<span class="status-pill status-${status}">${STATUS_LABELS[status]}</span>`;
+}
 
 /* ─── Render ─────────────────────────────────────────────────── */
 
 export function renderTodos(storage: StorageAdapter): void {
+  if (state.config.todosView === "kanban") {
+    renderTodoKanban(storage);
+  } else {
+    renderTodoList(storage);
+  }
+}
+
+function renderTodoList(storage: StorageAdapter): void {
   const list = el("todoList");
   const empty = el("todosEmpty");
   list.innerHTML = "";
@@ -20,12 +42,14 @@ export function renderTodos(storage: StorageAdapter): void {
   empty.classList.add("hidden");
 
   state.todos.forEach((todo) => {
+    const isDone = todo.status === "done";
     const li = document.createElement("li");
-    li.className = `todo-item${todo.completed ? " completed" : ""}`;
+    li.className = `todo-item${isDone ? " completed" : ""}`;
     li.innerHTML = `
       ${DRAG_HANDLE_SVG}
-      <input type="checkbox" class="todo-checkbox" ${todo.completed ? "checked" : ""} />
+      <input type="checkbox" class="todo-checkbox" ${isDone ? "checked" : ""} />
       <span class="todo-text">${escapeHtml(todo.text)}</span>
+      ${statusPillHtml(todo.status)}
       <button class="todo-delete" data-id="${todo.id}" title="Remove">×</button>
     `;
 
@@ -33,7 +57,11 @@ export function renderTodos(storage: StorageAdapter): void {
       "change",
       async (e) => {
         const item = state.todos.find((t) => t.id === todo.id);
-        if (item) item.completed = (e.target as HTMLInputElement).checked;
+        if (item) {
+          item.status = (e.target as HTMLInputElement).checked
+            ? "done"
+            : "todo";
+        }
         try {
           await saveTodos(storage);
           renderTodos(storage);
@@ -104,7 +132,7 @@ export function initTodos(storage: StorageAdapter): void {
     const text = input.value.trim();
     if (!text) return;
 
-    state.todos.push({ id: genId(), text, completed: false });
+    state.todos.push({ id: genId(), text, status: "todo" });
     try {
       await saveTodos(storage);
       renderTodos(storage);

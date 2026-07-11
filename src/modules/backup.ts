@@ -3,6 +3,7 @@ import { state, saveLinks, saveTodos, saveNotes, saveConfig } from "../state";
 import { applyTheme } from "./theme";
 import { applyLinksLayout } from "./linksLayout";
 import { applyLinkOpenMode } from "./linkOpenMode";
+import { applyTodosView } from "./todosView";
 import { renderLinks } from "./links";
 import { renderTodos } from "./todos";
 import { renderNotes } from "./notes";
@@ -59,14 +60,27 @@ async function applyBackup(
   backup: BackupFile,
   storage: StorageAdapter,
 ): Promise<void> {
+  const validStatuses = new Set(["todo", "inProgress", "review", "done"]);
   state.links = backup.links;
-  state.todos = backup.todos;
+  state.todos = backup.todos.map((t) => {
+    const raw = t as typeof t & { completed?: boolean };
+    return {
+      id: raw.id,
+      text: raw.text,
+      status: validStatuses.has(raw.status as string)
+        ? raw.status
+        : raw.completed
+          ? "done"
+          : "todo",
+    };
+  });
   state.notes = backup.notes;
   state.config = {
     theme: backup.config.theme === "light" ? "light" : "dark",
     linksLayout: backup.config.linksLayout === "list" ? "list" : "grid",
     linkOpenMode:
       backup.config.linkOpenMode === "sameTab" ? "sameTab" : "newTab",
+    todosView: backup.config.todosView === "kanban" ? "kanban" : "list",
   };
 
   await Promise.all([
@@ -79,6 +93,7 @@ async function applyBackup(
   applyTheme(state.config.theme);
   applyLinksLayout(state.config.linksLayout ?? "grid");
   applyLinkOpenMode(state.config.linkOpenMode ?? "newTab");
+  applyTodosView(state.config.todosView ?? "list");
   renderLinks(storage);
   renderTodos(storage);
   renderNotes(storage);

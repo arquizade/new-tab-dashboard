@@ -192,6 +192,15 @@
         display: block;
     }
 
+    /* The To-Do section stretches to fill the viewport so the      */
+    /* Kanban board (and its columns) can grow to fill remaining    */
+    /* space below the header instead of shrink-wrapping content.   */
+    #section-todos.active {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 104px);
+    }
+
     /* Nav button active state (JS adds .active) */
     .nav-btn.active {
         background: var(--accent-soft) !important;
@@ -211,6 +220,13 @@
 
     /* Open-mode toggle active state */
     .open-mode-btn.active {
+        background: var(--surface) !important;
+        color: var(--text-1) !important;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Todos view toggle active state */
+    .todos-view-btn.active {
         background: var(--surface) !important;
         color: var(--text-1) !important;
         box-shadow: var(--shadow-sm);
@@ -405,6 +421,165 @@
     }
     .todo-delete:hover {
         color: var(--danger);
+    }
+
+    /* ─── Status Pill ────────────────────────────────────────── */
+    .status-pill {
+        flex-shrink: 0;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        padding: 4px 9px;
+        border-radius: 9999px;
+        border: 1px solid var(--border-mid);
+        color: var(--text-3);
+        background: transparent;
+    }
+
+    .status-pill.status-todo {
+        color: var(--text-2);
+        border-color: var(--border-mid);
+    }
+
+    .status-pill.status-inProgress {
+        color: var(--accent);
+        border-color: var(--accent-border);
+    }
+
+    .status-pill.status-review {
+        color: #d6a53c;
+        border-color: rgba(214, 165, 60, 0.35);
+    }
+
+    .status-pill.status-done {
+        color: var(--success, #4caf6f);
+        border-color: rgba(76, 175, 111, 0.35);
+    }
+
+    /* ─── Kanban Board ───────────────────────────────────────── */
+    /* Minimalist, line-based layout: columns and cards are set     */
+    /* apart with borders rather than surface fills or shadows.     */
+    .kanban-board {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: 1fr;
+        gap: 0;
+        align-items: stretch;
+        flex: 1;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    .kanban-col {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-width: 0;
+        height: 100%;
+        border-right: 1px solid var(--border);
+    }
+
+    .kanban-col:last-child {
+        border-right: none;
+    }
+
+    .kanban-col-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .kanban-col-title {
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--text-2);
+    }
+
+    .kanban-col-count {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--text-3);
+        border: 1px solid var(--border-mid);
+        border-radius: 9999px;
+        min-width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 6px;
+    }
+
+    .kanban-col-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-height: 60px;
+        flex: 1;
+        overflow-y: auto;
+        transition: background 150ms var(--ease-smooth);
+    }
+
+    .kanban-col-cards.drag-over-empty {
+        background: var(--accent-soft);
+        outline: 1.5px dashed var(--accent-border);
+        outline-offset: -1.5px;
+    }
+
+    .kanban-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 8px;
+        padding: 12px 14px;
+        background: transparent;
+        border: 1.5px dotted var(--accent-border);
+        border-radius: var(--radius-lg);
+        position: relative;
+        cursor: grab;
+        transition:
+            background 180ms var(--ease-smooth),
+            border-color 180ms var(--ease-smooth);
+    }
+
+    .kanban-col-cards > .kanban-card + .kanban-card {
+        margin-top: 0;
+    }
+
+    .kanban-card:hover {
+        background: var(--surface-2);
+    }
+
+    .kanban-card-text {
+        flex: 1;
+        font-size: 13px;
+        color: var(--text-1);
+        line-height: 1.4;
+        word-break: break-word;
+    }
+
+    .kanban-card .drag-handle {
+        position: static;
+        margin-right: 0;
+        opacity: 0;
+    }
+
+    .kanban-card:hover .drag-handle {
+        opacity: 1;
+    }
+
+    .kanban-card .card-delete {
+        opacity: 0;
+    }
+
+    .kanban-card:hover .card-delete {
+        opacity: 1;
     }
 
     /* ─── Note Cards ─────────────────────────────────────────── */
@@ -682,7 +857,8 @@ main#main {
 
 /* ─── Drag States ────────────────────────────────────────────── */
 .link-card.dragging,
-.todo-item.dragging {
+.todo-item.dragging,
+.kanban-card.dragging {
     opacity: 0.22;
     background: var(--surface-2) !important;
     border-style: dashed !important;
@@ -694,7 +870,9 @@ main#main {
 .link-card::before,
 .link-card::after,
 .todo-item::before,
-.todo-item::after {
+.todo-item::after,
+.kanban-card::before,
+.kanban-card::after {
     content: "";
     position: absolute;
     left: 4px;
@@ -712,28 +890,34 @@ main#main {
 }
 
 .link-card::before,
-.todo-item::before {
+.todo-item::before,
+.kanban-card::before {
     top: -3px;
 }
 .link-card::after,
-.todo-item::after {
+.todo-item::after,
+.kanban-card::after {
     bottom: -3px;
 }
 
 .link-card.drag-over-before,
 .link-card.drag-over-after,
 .todo-item.drag-over-before,
-.todo-item.drag-over-after {
+.todo-item.drag-over-after,
+.kanban-card.drag-over-before,
+.kanban-card.drag-over-after {
     z-index: 2;
     position: relative;
 }
 
 .link-card.drag-over-before::before,
-.todo-item.drag-over-before::before {
+.todo-item.drag-over-before::before,
+.kanban-card.drag-over-before::before {
     opacity: 1;
 }
 .link-card.drag-over-after::after,
-.todo-item.drag-over-after::after {
+.todo-item.drag-over-after::after,
+.kanban-card.drag-over-after::after {
     opacity: 1;
 }
 

@@ -15,6 +15,7 @@ chrome.runtime.onInstalled.addListener((details) => {
             theme: "dark",
             linksLayout: "grid",
             linkOpenMode: "newTab",
+            todosView: "list",
           },
         });
       }

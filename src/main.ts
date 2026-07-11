@@ -14,6 +14,7 @@ import {
   resetLinksQuery,
 } from "./modules/links";
 import { initTodos, renderTodos } from "./modules/todos";
+import { initTodosView } from "./modules/todosView";
 import { initNotes, renderNotes } from "./modules/notes";
 import { initBackup } from "./modules/backup";
 
@@ -35,6 +36,7 @@ async function init(): Promise<void> {
   initLinksSearch(storage);
   initLinks(storage);
   initTodos(storage);
+  initTodosView(storage);
   initNotes(storage);
 
   // Attach the single global keydown listener with all registered shortcuts
