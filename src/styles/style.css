@@ -31,6 +31,13 @@
     --shadow-md:
         0 4px 14px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
     color-scheme: dark;
+
+    /* Note color categories */
+    --note-blue: #4d8cf7;
+    --note-green: #4caf6f;
+    --note-yellow: #d6a53c;
+    --note-red: #e2574c;
+    --note-purple: #9b6fe0;
 }
 
 /* ─── Islands Light ───────────────────────────────────────────── */
@@ -590,6 +597,7 @@
     .note-card {
         background: var(--surface);
         border: 1px solid var(--border);
+        border-left: 3px solid var(--note-color, var(--border-mid));
         border-radius: var(--radius-xl);
         padding: 18px 22px;
         position: relative;
@@ -602,8 +610,25 @@
 
     .note-card:hover {
         border-color: var(--border-mid);
+        border-left-color: var(--note-color, var(--border-mid));
         background: var(--surface-2);
         box-shadow: var(--shadow-md);
+    }
+
+    .note-card.note-color-blue {
+        --note-color: var(--note-blue);
+    }
+    .note-card.note-color-green {
+        --note-color: var(--note-green);
+    }
+    .note-card.note-color-yellow {
+        --note-color: var(--note-yellow);
+    }
+    .note-card.note-color-red {
+        --note-color: var(--note-red);
+    }
+    .note-card.note-color-purple {
+        --note-color: var(--note-purple);
     }
 
     .note-text {
@@ -615,12 +640,48 @@
         margin-bottom: 12px;
     }
 
+    /* Non-editing cards are fully clickable to enter edit mode. */
+    .note-card:not(.editing) {
+        cursor: pointer;
+    }
+
+    /* While editing, render the card like the add-note form panel. */
+    .note-card.editing {
+        cursor: default;
+        box-shadow: var(--shadow-md);
+        border-color: var(--border-mid);
+        border-left-color: var(--note-color, var(--border-mid));
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
     .note-meta {
         font-family: var(--font-mono);
         font-size: 10px;
         color: var(--text-3);
         letter-spacing: 0.4px;
         text-transform: uppercase;
+    }
+
+    .note-reminder-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.3px;
+        color: var(--note-color, var(--accent));
+        border: 1px solid var(--note-color, var(--accent-border));
+        border-radius: 9999px;
+        padding: 3px 9px;
+        margin-bottom: 10px;
+    }
+
+    .note-reminder-badge.past {
+        color: var(--text-3);
+        border-color: var(--border-mid);
+        text-decoration: line-through;
     }
 
     .note-delete {
@@ -646,6 +707,69 @@
     }
     .note-delete:hover {
         filter: brightness(1.2);
+    }
+
+    /* ─── Note Reminder Quick-Pick Buttons ──────────────────── */
+    .note-reminder-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        height: 28px;
+        padding: 0 11px;
+        border-radius: 9999px;
+        font-family: var(--font-sans);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid var(--border-mid);
+        background: transparent;
+        color: var(--text-2);
+        transition:
+            border-color 150ms var(--ease-smooth),
+            background 150ms var(--ease-smooth),
+            color 150ms var(--ease-smooth);
+    }
+
+    .note-reminder-btn:hover {
+        border-color: var(--accent-border);
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .note-reminder-btn.active {
+        border-color: var(--accent-border);
+        background: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    .note-reminder-icon-btn {
+        padding: 0 9px;
+    }
+
+    /* ─── Note Color Swatches ────────────────────────────────── */
+    .note-color-swatch {
+        width: 20px;
+        height: 20px;
+        border-radius: 9999px;
+        background: var(--swatch-color);
+        border: 2px solid transparent;
+        cursor: pointer;
+        padding: 0;
+        opacity: 0.55;
+        transition:
+            opacity 150ms var(--ease-smooth),
+            transform 150ms var(--ease-smooth),
+            border-color 150ms var(--ease-smooth);
+    }
+
+    .note-color-swatch:hover {
+        opacity: 0.85;
+    }
+
+    .note-color-swatch.active {
+        opacity: 1;
+        border-color: var(--text-1);
+        transform: scale(1.12);
     }
 
     /* ─── Import Confirm ─────────────────────────────────────── */

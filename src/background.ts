@@ -39,3 +39,41 @@ chrome.runtime.onInstalled.addListener((details) => {
 chrome.runtime.onStartup.addListener(() => {
   console.log("[New Tab Dashboard] Browser started – service worker active.");
 });
+
+/* ─── Note Reminders ─────────────────────────────────────────── */
+/* Reminders are scheduled as chrome.alarms (created from the new-tab */
+/* page when a note is saved with a reminderAt). chrome.alarms persist */
+/* across browser restarts, so no rescheduling is needed here — we    */
+/* just react when one fires and surface an OS notification.          */
+
+const NOTE_ALARM_PREFIX = "note-reminder-";
+
+interface StoredNote {
+  id: string;
+  text: string;
+  reminderAt?: string;
+}
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (!alarm.name.startsWith(NOTE_ALARM_PREFIX)) return;
+  const noteId = alarm.name.slice(NOTE_ALARM_PREFIX.length);
+
+  chrome.storage.local.get(["ntd-notes"], (result) => {
+    const notes = (result["ntd-notes"] as StoredNote[] | undefined) ?? [];
+    const note = notes.find((n) => n.id === noteId);
+    if (!note) return;
+
+    chrome.notifications.create(`note-${noteId}`, {
+      type: "basic",
+      iconUrl: "icons/icon128.png",
+      title: "Note reminder",
+      message: note.text,
+    });
+
+    /* Clear the reminder so the badge/scheduling doesn't linger. */
+    const updated = notes.map((n) =>
+      n.id === noteId ? { ...n, reminderAt: undefined } : n,
+    );
+    chrome.storage.local.set({ "ntd-notes": updated });
+  });
+});

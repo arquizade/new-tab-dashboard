@@ -14,10 +14,15 @@ export interface Todo {
   status: TodoStatus;
 }
 
+export type NoteColor = "blue" | "green" | "yellow" | "red" | "purple";
+
 export interface Note {
   id: string;
   text: string;
   date: string;
+  color: NoteColor;
+  /** ISO timestamp for a one-time reminder notification, if set. */
+  reminderAt?: string;
 }
 
 export interface Config {

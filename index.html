@@ -727,6 +727,98 @@
                         placeholder="Start writing..."
                         class="w-full py-2.5 px-4 rounded-xl font-sans text-[13px] text-text-1 outline-none resize-y min-h-24 leading-[1.65] bg-bg border border-border-mid placeholder:text-text-3 focus:border-accent focus:shadow-[0_0_0_3px_var(--accent-glow)] transition-[border-color,box-shadow] duration-[180ms]"
                     ></textarea>
+
+                    <div class="flex items-center justify-between gap-3 flex-wrap">
+                        <!-- Reminder quick-pick + custom picker -->
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <button
+                                type="button"
+                                id="noteReminderToday"
+                                class="note-reminder-btn"
+                            >
+                                Today
+                            </button>
+                            <button
+                                type="button"
+                                id="noteReminderTomorrow"
+                                class="note-reminder-btn"
+                            >
+                                Tomorrow
+                            </button>
+                            <!-- Clock icon toggles the full picker -->
+                            <button
+                                type="button"
+                                id="noteReminderPickerToggle"
+                                title="Custom date & time"
+                                class="note-reminder-btn note-reminder-icon-btn"
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    class="w-3.5 h-3.5"
+                                >
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 7v5l3 3" />
+                                </svg>
+                            </button>
+                            <!-- Hidden by default; shown when picker is open -->
+                            <input
+                                id="noteReminder"
+                                type="datetime-local"
+                                class="hidden py-1.5 px-2.5 rounded-lg font-sans text-[12px] text-text-1 outline-none bg-bg border border-border-mid focus:border-accent transition-[border-color] duration-[180ms]"
+                            />
+                            <button
+                                type="button"
+                                id="noteReminderClear"
+                                title="Clear reminder"
+                                class="hidden font-sans text-[13px] leading-none text-text-3 hover:text-danger cursor-pointer bg-transparent border-0 px-1 transition-colors duration-[150ms]"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <!-- Color category picker -->
+                        <div id="noteColorPicker" class="flex items-center gap-2">
+                            <button
+                                type="button"
+                                data-color="blue"
+                                title="Blue"
+                                class="note-color-swatch active"
+                                style="--swatch-color: var(--note-blue)"
+                            ></button>
+                            <button
+                                type="button"
+                                data-color="green"
+                                title="Green"
+                                class="note-color-swatch"
+                                style="--swatch-color: var(--note-green)"
+                            ></button>
+                            <button
+                                type="button"
+                                data-color="yellow"
+                                title="Yellow"
+                                class="note-color-swatch"
+                                style="--swatch-color: var(--note-yellow)"
+                            ></button>
+                            <button
+                                type="button"
+                                data-color="red"
+                                title="Red"
+                                class="note-color-swatch"
+                                style="--swatch-color: var(--note-red)"
+                            ></button>
+                            <button
+                                type="button"
+                                data-color="purple"
+                                title="Purple"
+                                class="note-color-swatch"
+                                style="--swatch-color: var(--note-purple)"
+                            ></button>
+                        </div>
+                    </div>
+
                     <div class="flex gap-2 pt-1">
                         <button
                             id="saveNoteBtn"

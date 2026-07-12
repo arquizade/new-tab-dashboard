@@ -43,6 +43,32 @@ function migrateTodos(rawTodos: unknown[]): Todo[] {
   });
 }
 
+const VALID_NOTE_COLORS = new Set(["blue", "green", "yellow", "red", "purple"]);
+
+/**
+ * Older backups/storage may contain notes without a `color`. Normalize
+ * everything to the new shape and drop any invalid `reminderAt` value.
+ */
+function migrateNotes(rawNotes: unknown[]): Note[] {
+  return rawNotes.map((raw) => {
+    const n = raw as Partial<Note>;
+    const color = VALID_NOTE_COLORS.has(n.color as string)
+      ? (n.color as Note["color"])
+      : "blue";
+    const reminderAt =
+      typeof n.reminderAt === "string" && !isNaN(Date.parse(n.reminderAt))
+        ? n.reminderAt
+        : undefined;
+    return {
+      id: n.id ?? "",
+      text: n.text ?? "",
+      date: n.date ?? new Date().toISOString(),
+      color,
+      ...(reminderAt ? { reminderAt } : {}),
+    };
+  });
+}
+
 /* ─── State Singleton ────────────────────────────────────────── */
 
 export const state: AppState = {
@@ -64,7 +90,7 @@ export async function loadState(storage: StorageAdapter): Promise<void> {
 
   state.links = links ?? [];
   state.todos = migrateTodos(todos ?? []);
-  state.notes = notes ?? [];
+  state.notes = migrateNotes(notes ?? []);
   state.config = { ...DEFAULT_CONFIG, ...config };
 }
 

@@ -6,7 +6,7 @@ import { applyLinkOpenMode } from "./linkOpenMode";
 import { applyTodosView } from "./todosView";
 import { renderLinks } from "./links";
 import { renderTodos } from "./todos";
-import { renderNotes } from "./notes";
+import { renderNotes, reconcileReminders } from "./notes";
 import { showToast } from "./toast";
 import type { BackupFile, StorageAdapter } from "../types";
 
@@ -74,7 +74,20 @@ async function applyBackup(
           : "todo",
     };
   });
-  state.notes = backup.notes;
+  const validNoteColors = new Set(["blue", "green", "yellow", "red", "purple"]);
+  state.notes = backup.notes.map((n) => {
+    const reminderAt =
+      typeof n.reminderAt === "string" && !isNaN(Date.parse(n.reminderAt))
+        ? n.reminderAt
+        : undefined;
+    return {
+      id: n.id,
+      text: n.text,
+      date: n.date,
+      color: validNoteColors.has(n.color as string) ? n.color : "blue",
+      ...(reminderAt ? { reminderAt } : {}),
+    };
+  });
   state.config = {
     theme: backup.config.theme === "light" ? "light" : "dark",
     linksLayout: backup.config.linksLayout === "list" ? "list" : "grid",
@@ -97,6 +110,12 @@ async function applyBackup(
   renderLinks(storage);
   renderTodos(storage);
   renderNotes(storage);
+
+  /* Bring scheduled chrome.alarms fully in sync with the imported     */
+  /* notes: clears any alarm for a note that was removed/changed by    */
+  /* the import, and (re)schedules alarms for notes with a future      */
+  /* reminder.                                                         */
+  await reconcileReminders(state.notes);
 }
 
 /* ─── Init ───────────────────────────────────────────────────── */
