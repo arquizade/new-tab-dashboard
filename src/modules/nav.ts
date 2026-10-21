@@ -9,9 +9,7 @@ export function hideAllForms(): void {
 }
 
 export function clearLinksSearch(onClear: () => void): void {
-  const input = document.getElementById(
-    "linksSearch",
-  ) as HTMLInputElement | null;
+  const input = document.getElementById("linksSearch") as HTMLInputElement | null;
   const clear = document.getElementById("linksClearSearch");
   if (input) input.value = "";
   if (clear) clear.classList.add("hidden");
@@ -19,16 +17,10 @@ export function clearLinksSearch(onClear: () => void): void {
 }
 
 export function switchSection(name: string, onLinksLeave: () => void): void {
-  document
-    .querySelectorAll<HTMLElement>(".nav-btn")
-    .forEach((b) => b.classList.remove("active"));
-  document
-    .querySelectorAll<HTMLElement>(".section")
-    .forEach((s) => s.classList.remove("active"));
+  document.querySelectorAll<HTMLElement>(".nav-btn").forEach((b) => b.classList.remove("active"));
+  document.querySelectorAll<HTMLElement>(".section").forEach((s) => s.classList.remove("active"));
 
-  const btn = document.querySelector<HTMLElement>(
-    `.nav-btn[data-section="${name}"]`,
-  );
+  const btn = document.querySelector<HTMLElement>(`.nav-btn[data-section="${name}"]`);
   if (btn) btn.classList.add("active");
   el(`section-${name}`).classList.add("active");
 

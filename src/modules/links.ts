@@ -54,8 +54,7 @@ export function renderLinks(storage: StorageAdapter): void {
   const q = linksQuery.trim().toLowerCase();
   const visible = q
     ? state.links.filter(
-        (l) =>
-          l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q),
+        (l) => l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q),
       )
     : state.links;
 
@@ -117,31 +116,23 @@ export function renderLinks(storage: StorageAdapter): void {
       a.insertBefore(img, a.children[1]);
     }
 
-    a.querySelector<HTMLButtonElement>(".card-delete")!.addEventListener(
-      "click",
-      async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        state.links = state.links.filter((l) => l.id !== link.id);
-        try {
-          await saveLinks(storage);
-          renderLinks(storage);
-        } catch {
-          showToast("Failed to delete link", "error");
-        }
-      },
-    );
+    a.querySelector<HTMLButtonElement>(".card-delete")!.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      state.links = state.links.filter((l) => l.id !== link.id);
+      try {
+        await saveLinks(storage);
+        renderLinks(storage);
+      } catch {
+        showToast("Failed to delete link", "error");
+      }
+    });
 
     addDragHandlers({
       element: a,
       itemId: link.id,
       onDrop: async (draggedId, targetId, insertBefore) => {
-        state.links = reorderItems(
-          state.links,
-          draggedId,
-          targetId,
-          insertBefore,
-        );
+        state.links = reorderItems(state.links, draggedId, targetId, insertBefore);
         try {
           await saveLinks(storage);
           renderLinks(storage);
@@ -243,7 +234,9 @@ export function initLinks(storage: StorageAdapter): void {
 
   [inputTitle, inputUrl].forEach((input) => {
     input.addEventListener("keydown", (e: KeyboardEvent) => {
-      if (e.key === "Enter") saveLink();
+      if (e.key === "Enter") {
+        saveLink().catch((err) => console.error("[ntd] Failed to save link:", err));
+      }
       if (e.key === "Escape") closeForm();
     });
   });

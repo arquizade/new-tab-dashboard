@@ -56,10 +56,7 @@ function exportBackup(): void {
 
 /* ─── Import ─────────────────────────────────────────────────── */
 
-async function applyBackup(
-  backup: BackupFile,
-  storage: StorageAdapter,
-): Promise<void> {
+async function applyBackup(backup: BackupFile, storage: StorageAdapter): Promise<void> {
   const validStatuses = new Set(["todo", "inProgress", "review", "done"]);
   state.links = backup.links;
   state.todos = backup.todos.map((t) => {
@@ -91,8 +88,7 @@ async function applyBackup(
   state.config = {
     theme: backup.config.theme === "light" ? "light" : "dark",
     linksLayout: backup.config.linksLayout === "list" ? "list" : "grid",
-    linkOpenMode:
-      backup.config.linkOpenMode === "sameTab" ? "sameTab" : "newTab",
+    linkOpenMode: backup.config.linkOpenMode === "sameTab" ? "sameTab" : "newTab",
     todosView: backup.config.todosView === "kanban" ? "kanban" : "list",
   };
 

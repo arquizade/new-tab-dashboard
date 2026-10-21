@@ -76,19 +76,19 @@ follow [Conventional Commits](https://www.conventionalcommits.org/):
 - **One type per commit.** If a change spans several types, split it into
   separate commits.
 
-| Type | When to use | Example |
-| --- | --- | --- |
-| `feat` | A new feature for the user | `feat: add reminder toggle for notes` |
-| `fix` | A bug fix | `fix: resolve favicon crash on new tab` |
-| `chore` | Maintenance, tooling, or config that doesn't touch source or tests | `chore: update dependencies to latest version` |
-| `docs` | Documentation only (`README`, `AGENTS.md`, `CHANGELOG`) | `docs: update API setup guide` |
-| `refactor` | Code change that neither fixes a bug nor adds a feature | `refactor: simplify storage connection logic` |
-| `style` | Formatting, whitespace, CSS tweaks — no logic change | `style: fix indentation in navbar` |
-| `test` | Adding or refactoring tests | `test: add unit tests for storage helpers` |
-| `perf` | A change that improves performance | `perf: optimize image loading speed` |
-| `ci` | CI/CD workflows or pipeline scripts | `ci: add GitHub Actions workflow for typecheck` |
-| `build` | Build system, bundler, or dependency changes | `build: add Vite configuration` |
-| `revert` | Reverting a previous commit | `revert: revert "feat: add user profile editing"` |
+| Type       | When to use                                                        | Example                                           |
+| ---------- | ------------------------------------------------------------------ | ------------------------------------------------- |
+| `feat`     | A new feature for the user                                         | `feat: add reminder toggle for notes`             |
+| `fix`      | A bug fix                                                          | `fix: resolve favicon crash on new tab`           |
+| `chore`    | Maintenance, tooling, or config that doesn't touch source or tests | `chore: update dependencies to latest version`    |
+| `docs`     | Documentation only (`README`, `AGENTS.md`, `CHANGELOG`)            | `docs: update API setup guide`                    |
+| `refactor` | Code change that neither fixes a bug nor adds a feature            | `refactor: simplify storage connection logic`     |
+| `style`    | Formatting, whitespace, CSS tweaks — no logic change               | `style: fix indentation in navbar`                |
+| `test`     | Adding or refactoring tests                                        | `test: add unit tests for storage helpers`        |
+| `perf`     | A change that improves performance                                 | `perf: optimize image loading speed`              |
+| `ci`       | CI/CD workflows or pipeline scripts                                | `ci: add GitHub Actions workflow for typecheck`   |
+| `build`    | Build system, bundler, or dependency changes                       | `build: add Vite configuration`                   |
+| `revert`   | Reverting a previous commit                                        | `revert: revert "feat: add user profile editing"` |
 
 Notes specific to this repo:
 
@@ -135,18 +135,18 @@ Notes specific to this repo:
 The source layout below is fixed; add files that fit it rather than creating a
 new top-level script or an inline handler:
 
-| Path | Responsibility |
-| --- | --- |
-| `index.html` | Layout/markup only. The single external `<script type="module" src="/src/main.ts">` is the entry; no inline `<script>`/`<style>` blocks. |
-| `src/main.ts` | Entry point: wires modules to the DOM. |
-| `src/state.ts` | Shared application state. |
-| `src/storage.ts` | `chrome.storage.local` access (hydration + persistence). |
-| `src/types.ts` | Shared TypeScript types. |
-| `src/background.ts` | Service worker: alarms, notifications, message plumbing. |
-| `src/modules/*.ts` | One feature per module (`links`, `notes`, `todos`, `theme`, …). |
-| `src/styles/style.css` | All UI styling, theme tokens, layout rules. |
-| `src/utils/*.ts` | Reusable helpers (`dom`, `date`, `drag`, `id`). |
-| `scripts/*.py` | Packaging/release tooling (stdlib only). |
+| Path                   | Responsibility                                                                                                                           |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`           | Layout/markup only. The single external `<script type="module" src="/src/main.ts">` is the entry; no inline `<script>`/`<style>` blocks. |
+| `src/main.ts`          | Entry point: wires modules to the DOM.                                                                                                   |
+| `src/state.ts`         | Shared application state.                                                                                                                |
+| `src/storage.ts`       | `chrome.storage.local` access (hydration + persistence).                                                                                 |
+| `src/types.ts`         | Shared TypeScript types.                                                                                                                 |
+| `src/background.ts`    | Service worker: alarms, notifications, message plumbing.                                                                                 |
+| `src/modules/*.ts`     | One feature per module (`links`, `notes`, `todos`, `theme`, …).                                                                          |
+| `src/styles/style.css` | All UI styling, theme tokens, layout rules.                                                                                              |
+| `src/utils/*.ts`       | Reusable helpers (`dom`, `date`, `drag`, `id`).                                                                                          |
+| `scripts/*.py`         | Packaging/release tooling (stdlib only).                                                                                                 |
 
 - Do **not** combine scripts into HTML templates, and do not put styling in
   markup.
@@ -192,17 +192,16 @@ Run these and report real results, not intentions:
 
 ```bash
 bun run typecheck   # tsc --noEmit, must be clean
-bun run lint        # vp lint / Oxlint, must exit 0 (existing warnings are fine)
+bun run format      # vp fmt / Oxfmt, writes formatting
+bun run lint        # vp lint / Oxlint, must exit 0 with no warnings
 bun run build       # must succeed, writes dist/
 bun run zip         # optional: packages dist/ into a zip for manual install
 bun run release     # optional: build + package into release/, verify, print the
                     # publish steps for the human to run (never --run)
 ```
 
-Do not use `vp check` as the verification command: it also runs Oxfmt, and the
-repository has never been formatted with it, so it fails on ~18 pre-existing
-files. Do not run `vp fmt` across the repo unless the human asks for a
-formatting pass — it rewrites Markdown tables, `index.html`, and `style.css`.
+`vp check` runs Oxfmt, Oxlint and the type check together; it must stay clean
+and does not rewrite files. Run `vp fmt` after edits to apply formatting.
 
 ## Style, linting, and hygiene
 
@@ -211,6 +210,6 @@ formatting pass — it rewrites Markdown tables, `index.html`, and `style.css`.
   `src/utils/`.
 - Modern ES/TypeScript standards; no unhandled runtime exceptions, and no
   `any` or type suppressions just to silence the compiler.
-- Match the surrounding naming and formatting; do not reformat unrelated files.
+- **Formatting:** run `vp fmt` (Oxfmt); do not hand-format or reformat unrelated files.
 - Never commit `.DS_Store`, `dist/`, `release/`, `*.zip`, `node_modules/`,
   `.vite/`, or other cache directories — see `.gitignore`.

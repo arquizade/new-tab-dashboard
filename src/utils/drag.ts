@@ -23,11 +23,7 @@ export function clearDropIndicators(): void {
 export interface DragHandlerOptions<T extends HTMLElement> {
   element: T;
   itemId: string;
-  onDrop: (
-    draggedId: string,
-    targetId: string,
-    insertBefore: boolean,
-  ) => Promise<void>;
+  onDrop: (draggedId: string, targetId: string, insertBefore: boolean) => Promise<void>;
 }
 
 export function addDragHandlers<T extends HTMLElement>({

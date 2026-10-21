@@ -54,11 +54,7 @@ function clearKanbanIndicators(): void {
   document
     .querySelectorAll(".kanban-card, .kanban-col-cards")
     .forEach((elm) =>
-      elm.classList.remove(
-        "drag-over-before",
-        "drag-over-after",
-        "drag-over-empty",
-      ),
+      elm.classList.remove("drag-over-before", "drag-over-after", "drag-over-empty"),
     );
 }
 
@@ -145,13 +141,7 @@ export function renderTodoKanban(storage: StorageAdapter): void {
 
         const rect = card.getBoundingClientRect();
         const insertBefore = e.clientY < rect.top + rect.height / 2;
-        state.todos = moveTodoCard(
-          state.todos,
-          kanbanDragSrcId,
-          status,
-          todo.id,
-          insertBefore,
-        );
+        state.todos = moveTodoCard(state.todos, kanbanDragSrcId, status, todo.id, insertBefore);
         try {
           await saveTodos(storage);
           renderTodoKanban(storage);
@@ -184,13 +174,7 @@ export function renderTodoKanban(storage: StorageAdapter): void {
       clearKanbanIndicators();
       if (!kanbanDragSrcId || e.target !== cardsWrap) return;
 
-      state.todos = moveTodoCard(
-        state.todos,
-        kanbanDragSrcId,
-        status,
-        null,
-        false,
-      );
+      state.todos = moveTodoCard(state.todos, kanbanDragSrcId, status, null, false);
       try {
         await saveTodos(storage);
         renderTodoKanban(storage);

@@ -13,14 +13,18 @@ const hasAlarms = typeof chrome !== "undefined" && !!chrome.alarms;
 
 export function scheduleReminder(noteId: string, reminderAt: string): void {
   if (!hasAlarms) return;
-  chrome.alarms.create(`${NOTE_ALARM_PREFIX}${noteId}`, {
-    when: new Date(reminderAt).getTime(),
-  });
+  chrome.alarms
+    .create(`${NOTE_ALARM_PREFIX}${noteId}`, {
+      when: new Date(reminderAt).getTime(),
+    })
+    .catch((err) => console.error("[ntd] Failed to schedule reminder:", err));
 }
 
 export function clearReminder(noteId: string): void {
   if (!hasAlarms) return;
-  chrome.alarms.clear(`${NOTE_ALARM_PREFIX}${noteId}`);
+  chrome.alarms
+    .clear(`${NOTE_ALARM_PREFIX}${noteId}`)
+    .catch((err) => console.error("[ntd] Failed to clear reminder:", err));
 }
 
 /**
@@ -33,9 +37,7 @@ export async function reconcileReminders(
 ): Promise<void> {
   if (!hasAlarms) return;
 
-  const wantedIds = new Set(
-    notes.filter((n) => n.reminderAt).map((n) => n.id),
-  );
+  const wantedIds = new Set(notes.filter((n) => n.reminderAt).map((n) => n.id));
 
   const existingAlarms = await chrome.alarms.getAll();
   await Promise.all(
@@ -97,10 +99,10 @@ function formatReminder(iso: string): string {
  */
 
 const SWATCHES: { color: NoteColor; cssVar: string }[] = [
-  { color: "blue",   cssVar: "var(--note-blue)" },
-  { color: "green",  cssVar: "var(--note-green)" },
+  { color: "blue", cssVar: "var(--note-blue)" },
+  { color: "green", cssVar: "var(--note-green)" },
   { color: "yellow", cssVar: "var(--note-yellow)" },
-  { color: "red",    cssVar: "var(--note-red)" },
+  { color: "red", cssVar: "var(--note-red)" },
   { color: "purple", cssVar: "var(--note-purple)" },
 ];
 
@@ -130,7 +132,8 @@ function noteFormHtml(initial: { text: string; color: NoteColor; reminderAt?: st
       </div>
 
       <div class="nf-color-picker flex items-center gap-2">
-        ${SWATCHES.map(({ color, cssVar }) => `
+        ${SWATCHES.map(
+          ({ color, cssVar }) => `
           <button
             type="button"
             data-color="${color}"
@@ -138,7 +141,8 @@ function noteFormHtml(initial: { text: string; color: NoteColor; reminderAt?: st
             class="note-color-swatch${initial.color === color ? " active" : ""}"
             style="--swatch-color: ${cssVar}"
           ></button>
-        `).join("")}
+        `,
+        ).join("")}
       </div>
     </div>
 
@@ -156,31 +160,40 @@ function noteFormHtml(initial: { text: string; color: NoteColor; reminderAt?: st
  */
 
 interface FormRefs {
-  textarea:        HTMLTextAreaElement;
-  btnToday:        HTMLButtonElement;
-  btnTomorrow:     HTMLButtonElement;
+  textarea: HTMLTextAreaElement;
+  btnToday: HTMLButtonElement;
+  btnTomorrow: HTMLButtonElement;
   btnPickerToggle: HTMLButtonElement;
-  reminderInput:   HTMLInputElement;
-  btnClear:        HTMLButtonElement;
-  colorPicker:     HTMLElement;
-  btnSave:         HTMLButtonElement;
-  btnCancel:       HTMLButtonElement;
+  reminderInput: HTMLInputElement;
+  btnClear: HTMLButtonElement;
+  colorPicker: HTMLElement;
+  btnSave: HTMLButtonElement;
+  btnCancel: HTMLButtonElement;
 }
 
 interface FormInitial {
-  text:       string;
-  color:      NoteColor;
+  text: string;
+  color: NoteColor;
   reminderAt?: string;
 }
 
 interface FormCallbacks {
-  onSave:   (values: { text: string; color: NoteColor; reminderAt?: string }) => Promise<void>;
+  onSave: (values: { text: string; color: NoteColor; reminderAt?: string }) => Promise<void>;
   onCancel: () => void;
 }
 
 function wireFormControls(refs: FormRefs, initial: FormInitial, cb: FormCallbacks): void {
-  const { textarea, btnToday, btnTomorrow, btnPickerToggle,
-          reminderInput, btnClear, colorPicker, btnSave, btnCancel } = refs;
+  const {
+    textarea,
+    btnToday,
+    btnTomorrow,
+    btnPickerToggle,
+    reminderInput,
+    btnClear,
+    colorPicker,
+    btnSave,
+    btnCancel,
+  } = refs;
 
   let selectedColor: NoteColor = initial.color;
   let quickPick: "today" | "tomorrow" | "custom" | null = null;
@@ -188,12 +201,16 @@ function wireFormControls(refs: FormRefs, initial: FormInitial, cb: FormCallback
   /* ── color ── */
   function setColor(color: NoteColor): void {
     selectedColor = color;
-    colorPicker.querySelectorAll<HTMLButtonElement>(".note-color-swatch")
+    colorPicker
+      .querySelectorAll<HTMLButtonElement>(".note-color-swatch")
       .forEach((b) => b.classList.toggle("active", b.dataset.color === color));
   }
 
-  colorPicker.querySelectorAll<HTMLButtonElement>(".note-color-swatch")
-    .forEach((btn) => btn.addEventListener("click", () => setColor(btn.dataset.color as NoteColor ?? "blue")));
+  colorPicker
+    .querySelectorAll<HTMLButtonElement>(".note-color-swatch")
+    .forEach((btn) =>
+      btn.addEventListener("click", () => setColor((btn.dataset.color as NoteColor) ?? "blue")),
+    );
 
   /* ── reminder ── */
   function setActiveQuick(pick: typeof quickPick): void {
@@ -223,13 +240,19 @@ function wireFormControls(refs: FormRefs, initial: FormInitial, cb: FormCallback
   }
 
   btnToday.addEventListener("click", () => {
-    if (quickPick === "today") { clearReminderUI(); return; }
+    if (quickPick === "today") {
+      clearReminderUI();
+      return;
+    }
     setActiveQuick("today");
     applyReminderValue(toDatetimeLocal(defaultToday()));
   });
 
   btnTomorrow.addEventListener("click", () => {
-    if (quickPick === "tomorrow") { clearReminderUI(); return; }
+    if (quickPick === "tomorrow") {
+      clearReminderUI();
+      return;
+    }
     setActiveQuick("tomorrow");
     applyReminderValue(toDatetimeLocal(defaultTomorrow()));
   });
@@ -280,8 +303,14 @@ function wireFormControls(refs: FormRefs, initial: FormInitial, cb: FormCallback
   btnSave.addEventListener("click", handleSave);
   btnCancel.addEventListener("click", cb.onCancel);
   textarea.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.key === "Escape") { e.preventDefault(); cb.onCancel(); }
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); handleSave(); }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      cb.onCancel();
+    }
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      handleSave().catch((err) => console.error("[ntd] Failed to save note:", err));
+    }
   });
 }
 
@@ -307,20 +336,22 @@ export function renderNotes(storage: StorageAdapter): void {
 }
 
 function renderCardView(card: HTMLElement, note: Note, storage: StorageAdapter): void {
-  const isPast = note.reminderAt
-    ? new Date(note.reminderAt).getTime() <= Date.now()
-    : false;
+  const isPast = note.reminderAt ? new Date(note.reminderAt).getTime() <= Date.now() : false;
 
   card.innerHTML = `
     <p class="note-text">${escapeHtml(note.text)}</p>
-    ${note.reminderAt ? `
+    ${
+      note.reminderAt
+        ? `
       <span class="note-reminder-badge${isPast ? " past" : ""}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3 h-3">
           <circle cx="12" cy="12" r="9" />
           <path d="M12 7v5l3 3" />
         </svg>
         ${formatReminder(note.reminderAt)}
-      </span>` : ""}
+      </span>`
+        : ""
+    }
     <span class="note-meta">${formatDate(note.date)}</span>
     <button class="note-delete" data-id="${note.id}" title="Remove">Delete</button>
   `;
@@ -331,34 +362,37 @@ function renderCardView(card: HTMLElement, note: Note, storage: StorageAdapter):
     renderEditForm(card, note, storage);
   });
 
-  card.querySelector<HTMLButtonElement>(".note-delete")!
-    .addEventListener("click", async (e) => {
-      e.stopPropagation();
-      state.notes = state.notes.filter((n) => n.id !== note.id);
-      clearReminder(note.id);
-      try {
-        await saveNotes(storage);
-        renderNotes(storage);
-      } catch {
-        showToast("Failed to delete note", "error");
-      }
-    });
+  card.querySelector<HTMLButtonElement>(".note-delete")!.addEventListener("click", async (e) => {
+    e.stopPropagation();
+    state.notes = state.notes.filter((n) => n.id !== note.id);
+    clearReminder(note.id);
+    try {
+      await saveNotes(storage);
+      renderNotes(storage);
+    } catch {
+      showToast("Failed to delete note", "error");
+    }
+  });
 }
 
 function renderEditForm(card: HTMLElement, note: Note, storage: StorageAdapter): void {
   card.classList.add("editing");
-  card.innerHTML = noteFormHtml({ text: note.text, color: note.color, reminderAt: note.reminderAt });
+  card.innerHTML = noteFormHtml({
+    text: note.text,
+    color: note.color,
+    reminderAt: note.reminderAt,
+  });
 
   const refs: FormRefs = {
-    textarea:        card.querySelector<HTMLTextAreaElement>(".nf-text")!,
-    btnToday:        card.querySelector<HTMLButtonElement>(".nf-today")!,
-    btnTomorrow:     card.querySelector<HTMLButtonElement>(".nf-tomorrow")!,
+    textarea: card.querySelector<HTMLTextAreaElement>(".nf-text")!,
+    btnToday: card.querySelector<HTMLButtonElement>(".nf-today")!,
+    btnTomorrow: card.querySelector<HTMLButtonElement>(".nf-tomorrow")!,
     btnPickerToggle: card.querySelector<HTMLButtonElement>(".nf-picker-toggle")!,
-    reminderInput:   card.querySelector<HTMLInputElement>(".nf-reminder")!,
-    btnClear:        card.querySelector<HTMLButtonElement>(".nf-clear")!,
-    colorPicker:     card.querySelector<HTMLElement>(".nf-color-picker")!,
-    btnSave:         card.querySelector<HTMLButtonElement>(".nf-save")!,
-    btnCancel:       card.querySelector<HTMLButtonElement>(".nf-cancel")!,
+    reminderInput: card.querySelector<HTMLInputElement>(".nf-reminder")!,
+    btnClear: card.querySelector<HTMLButtonElement>(".nf-clear")!,
+    colorPicker: card.querySelector<HTMLElement>(".nf-color-picker")!,
+    btnSave: card.querySelector<HTMLButtonElement>(".nf-save")!,
+    btnCancel: card.querySelector<HTMLButtonElement>(".nf-cancel")!,
   };
 
   /* Auto-size textarea to content */
@@ -371,53 +405,57 @@ function renderEditForm(card: HTMLElement, note: Note, storage: StorageAdapter):
     refs.textarea.style.height = `${refs.textarea.scrollHeight}px`;
   });
 
-  wireFormControls(refs, { text: note.text, color: note.color, reminderAt: note.reminderAt }, {
-    onSave: async ({ text, color, reminderAt }) => {
-      const target = state.notes.find((n) => n.id === note.id);
-      if (target) {
-        target.text  = text;
-        target.color = color;
-        /* Sync reminder alarm */
-        if (reminderAt) {
-          target.reminderAt = reminderAt;
-          scheduleReminder(note.id, reminderAt);
-        } else {
-          delete target.reminderAt;
-          clearReminder(note.id);
+  wireFormControls(
+    refs,
+    { text: note.text, color: note.color, reminderAt: note.reminderAt },
+    {
+      onSave: async ({ text, color, reminderAt }) => {
+        const target = state.notes.find((n) => n.id === note.id);
+        if (target) {
+          target.text = text;
+          target.color = color;
+          /* Sync reminder alarm */
+          if (reminderAt) {
+            target.reminderAt = reminderAt;
+            scheduleReminder(note.id, reminderAt);
+          } else {
+            delete target.reminderAt;
+            clearReminder(note.id);
+          }
+          /* Update card color class immediately */
+          card.className = `note-card note-color-${color}`;
         }
-        /* Update card color class immediately */
-        card.className = `note-card note-color-${color}`;
-      }
-      try {
-        await saveNotes(storage);
-        renderNotes(storage);
-      } catch {
-        showToast("Failed to save note", "error");
-      }
+        try {
+          await saveNotes(storage);
+          renderNotes(storage);
+        } catch {
+          showToast("Failed to save note", "error");
+        }
+      },
+      onCancel: () => {
+        card.classList.remove("editing");
+        renderCardView(card, note, storage);
+      },
     },
-    onCancel: () => {
-      card.classList.remove("editing");
-      renderCardView(card, note, storage);
-    },
-  });
+  );
 }
 
 /* ─── Add-note form (static HTML in index.html) ─────────────── */
 
 export function initNotes(storage: StorageAdapter): void {
-  const form     = el("formNote");
-  const btnAdd   = el("btnAddNote");
+  const form = el("formNote");
+  const btnAdd = el("btnAddNote");
 
   const refs: FormRefs = {
-    textarea:        el<HTMLTextAreaElement>("noteText"),
-    btnToday:        el("noteReminderToday"),
-    btnTomorrow:     el("noteReminderTomorrow"),
+    textarea: el<HTMLTextAreaElement>("noteText"),
+    btnToday: el("noteReminderToday"),
+    btnTomorrow: el("noteReminderTomorrow"),
     btnPickerToggle: el("noteReminderPickerToggle"),
-    reminderInput:   el<HTMLInputElement>("noteReminder"),
-    btnClear:        el("noteReminderClear"),
-    colorPicker:     el("noteColorPicker"),
-    btnSave:         el("saveNoteBtn"),
-    btnCancel:       el("cancelNoteBtn"),
+    reminderInput: el<HTMLInputElement>("noteReminder"),
+    btnClear: el("noteReminderClear"),
+    colorPicker: el("noteColorPicker"),
+    btnSave: el("saveNoteBtn"),
+    btnCancel: el("cancelNoteBtn"),
   };
 
   function openForm(): void {
@@ -437,7 +475,8 @@ export function initNotes(storage: StorageAdapter): void {
     ["noteReminderToday", "noteReminderTomorrow", "noteReminderPickerToggle"].forEach((id) =>
       el(id).classList.remove("active"),
     );
-    el("noteColorPicker").querySelectorAll<HTMLButtonElement>(".note-color-swatch")
+    el("noteColorPicker")
+      .querySelectorAll<HTMLButtonElement>(".note-color-swatch")
       .forEach((b) => b.classList.toggle("active", b.dataset.color === "blue"));
     /* Re-wire so internal state (selectedColor, quickPick) is reset */
     wireAddForm();
@@ -450,8 +489,13 @@ export function initNotes(storage: StorageAdapter): void {
       {
         onSave: async ({ text, color, reminderAt }) => {
           const id = genId();
-          state.notes.push({ id, text, date: new Date().toISOString(), color,
-            ...(reminderAt ? { reminderAt } : {}) });
+          state.notes.push({
+            id,
+            text,
+            date: new Date().toISOString(),
+            color,
+            ...(reminderAt ? { reminderAt } : {}),
+          });
           try {
             await saveNotes(storage);
             if (reminderAt) scheduleReminder(id, reminderAt);

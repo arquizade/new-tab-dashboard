@@ -5,9 +5,7 @@ import type { StorageAdapter } from "./types";
 export class ChromeStorageAdapter implements StorageAdapter {
   async get<T>(key: string): Promise<T | null> {
     return new Promise((resolve) => {
-      chrome.storage.local.get([key], (result) =>
-        resolve((result[key] as T) ?? null),
-      );
+      chrome.storage.local.get([key], (result) => resolve((result[key] as T) ?? null));
     });
   }
 

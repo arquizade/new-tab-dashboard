@@ -10,26 +10,28 @@ chrome.runtime.onInstalled.addListener((details) => {
     /* has a valid baseline config even before the user opens it.  */
     chrome.storage.local.get(["ntd-config"], (result) => {
       if (!result["ntd-config"]) {
-        chrome.storage.local.set({
-          "ntd-config": {
-            theme: "dark",
-            linksLayout: "grid",
-            linkOpenMode: "newTab",
-            todosView: "list",
-          },
-        });
+        chrome.storage.local
+          .set({
+            "ntd-config": {
+              theme: "dark",
+              linksLayout: "grid",
+              linkOpenMode: "newTab",
+              todosView: "list",
+            },
+          })
+          .catch((err) => console.error("[ntd] Failed to write default config:", err));
       }
     });
 
     /* Open the new-tab page automatically on first install so the */
     /* user immediately sees the dashboard.                         */
-    chrome.tabs.create({ url: "chrome://newtab" });
+    chrome.tabs
+      .create({ url: "chrome://newtab" })
+      .catch((err) => console.error("[ntd] Failed to open the new-tab page:", err));
   }
 
   if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
-    console.log(
-      `[New Tab Dashboard] Updated to v${chrome.runtime.getManifest().version}`,
-    );
+    console.log(`[New Tab Dashboard] Updated to v${chrome.runtime.getManifest().version}`);
   }
 });
 
@@ -63,17 +65,19 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     const note = notes.find((n) => n.id === noteId);
     if (!note) return;
 
-    chrome.notifications.create(`note-${noteId}`, {
-      type: "basic",
-      iconUrl: "icons/icon128.png",
-      title: "Note reminder",
-      message: note.text,
-    });
+    chrome.notifications
+      .create(`note-${noteId}`, {
+        type: "basic",
+        iconUrl: "icons/icon128.png",
+        title: "Note reminder",
+        message: note.text,
+      })
+      .catch((err) => console.error("[ntd] Failed to show note reminder:", err));
 
     /* Clear the reminder so the badge/scheduling doesn't linger. */
-    const updated = notes.map((n) =>
-      n.id === noteId ? { ...n, reminderAt: undefined } : n,
-    );
-    chrome.storage.local.set({ "ntd-notes": updated });
+    const updated = notes.map((n) => (n.id === noteId ? { ...n, reminderAt: undefined } : n));
+    chrome.storage.local
+      .set({ "ntd-notes": updated })
+      .catch((err) => console.error("[ntd] Failed to clear note reminder:", err));
   });
 });

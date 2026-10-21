@@ -4,10 +4,7 @@ import { el } from "../utils/dom";
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
-export function showToast(
-  message: string,
-  type: "success" | "error" = "success",
-): void {
+export function showToast(message: string, type: "success" | "error" = "success"): void {
   const toast = el("toast");
   toast.textContent = message;
   toast.className = `toast toast--${type} toast--visible`;

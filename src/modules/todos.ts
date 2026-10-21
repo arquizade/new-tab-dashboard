@@ -53,47 +53,34 @@ function renderTodoList(storage: StorageAdapter): void {
       <button class="todo-delete" data-id="${todo.id}" title="Remove">×</button>
     `;
 
-    li.querySelector<HTMLInputElement>(".todo-checkbox")!.addEventListener(
-      "change",
-      async (e) => {
-        const item = state.todos.find((t) => t.id === todo.id);
-        if (item) {
-          item.status = (e.target as HTMLInputElement).checked
-            ? "done"
-            : "todo";
-        }
-        try {
-          await saveTodos(storage);
-          renderTodos(storage);
-        } catch {
-          showToast("Failed to update todo", "error");
-        }
-      },
-    );
+    li.querySelector<HTMLInputElement>(".todo-checkbox")!.addEventListener("change", async (e) => {
+      const item = state.todos.find((t) => t.id === todo.id);
+      if (item) {
+        item.status = (e.target as HTMLInputElement).checked ? "done" : "todo";
+      }
+      try {
+        await saveTodos(storage);
+        renderTodos(storage);
+      } catch {
+        showToast("Failed to update todo", "error");
+      }
+    });
 
-    li.querySelector<HTMLButtonElement>(".todo-delete")!.addEventListener(
-      "click",
-      async () => {
-        state.todos = state.todos.filter((t) => t.id !== todo.id);
-        try {
-          await saveTodos(storage);
-          renderTodos(storage);
-        } catch {
-          showToast("Failed to delete todo", "error");
-        }
-      },
-    );
+    li.querySelector<HTMLButtonElement>(".todo-delete")!.addEventListener("click", async () => {
+      state.todos = state.todos.filter((t) => t.id !== todo.id);
+      try {
+        await saveTodos(storage);
+        renderTodos(storage);
+      } catch {
+        showToast("Failed to delete todo", "error");
+      }
+    });
 
     addDragHandlers({
       element: li,
       itemId: todo.id,
       onDrop: async (draggedId, targetId, insertBefore) => {
-        state.todos = reorderItems(
-          state.todos,
-          draggedId,
-          targetId,
-          insertBefore,
-        );
+        state.todos = reorderItems(state.todos, draggedId, targetId, insertBefore);
         try {
           await saveTodos(storage);
           renderTodos(storage);
@@ -151,7 +138,9 @@ export function initTodos(storage: StorageAdapter): void {
   btnSave.addEventListener("click", saveTodo);
 
   input.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.key === "Enter") saveTodo();
+    if (e.key === "Enter") {
+      saveTodo().catch((err) => console.error("[ntd] Failed to save todo:", err));
+    }
     if (e.key === "Escape") closeForm();
   });
 

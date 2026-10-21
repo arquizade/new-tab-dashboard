@@ -1,19 +1,21 @@
 {
   "name": "new-tab-dashboard",
   "version": "0.4.0",
+  "private": true,
   "description": "A lightweight, distraction-free Chrome extension that transforms your default \"New Tab\" page into a sleek, personal productivity hub.",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
   "scripts": {
     "dev": "vp dev",
     "build": "tsc --noEmit && vp build",
     "preview": "vp preview",
     "typecheck": "tsc --noEmit",
+    "format": "vp fmt",
     "lint": "vp lint",
     "zip": "bun run build && python3 scripts/zip-extension.py",
     "release": "python3 scripts/release.py"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@tailwindcss/language-server": "^0.14.29",
     "@tailwindcss/vite": "^4.3.0",
@@ -27,9 +29,8 @@
     "vite-plugin-static-copy": "^3.4.0",
     "vite-plus": "1.3.0"
   },
-  "private": true,
-  "packageManager": "bun@1.3.14",
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@1.3.0"
-  }
+  },
+  "packageManager": "bun@1.3.14"
 }

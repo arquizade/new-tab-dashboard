@@ -1,11 +1,4 @@
-import type {
-  AppState,
-  Config,
-  Link,
-  Note,
-  StorageAdapter,
-  Todo,
-} from "./types";
+import type { AppState, Config, Link, Note, StorageAdapter, Todo } from "./types";
 
 /* ─── Storage Keys ───────────────────────────────────────────── */
 
@@ -52,9 +45,7 @@ const VALID_NOTE_COLORS = new Set(["blue", "green", "yellow", "red", "purple"]);
 function migrateNotes(rawNotes: unknown[]): Note[] {
   return rawNotes.map((raw) => {
     const n = raw as Partial<Note>;
-    const color = VALID_NOTE_COLORS.has(n.color as string)
-      ? (n.color as Note["color"])
-      : "blue";
+    const color = VALID_NOTE_COLORS.has(n.color as string) ? (n.color as Note["color"]) : "blue";
     const reminderAt =
       typeof n.reminderAt === "string" && !isNaN(Date.parse(n.reminderAt))
         ? n.reminderAt

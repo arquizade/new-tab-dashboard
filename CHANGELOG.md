@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bun is pinned in `package.json` as the single package manager
   (`"packageManager": "bun@1.3.14"`); there is still only one lockfile
   (`bun.lock`).
+- Formatting is now enforced with Oxfmt: `vp fmt` writes it and `vp check`
+  verifies formatting, lint, and types together.
+
+### Fixed
+
+- Chrome API calls and async save handlers no longer leave promise rejections
+  unhandled; failures are logged instead of being dropped.
 
 ## [0.4.0] - 2026-10-21
 

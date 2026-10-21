@@ -7,12 +7,7 @@ import { initClock } from "./modules/clock";
 import { initNav } from "./modules/nav";
 import { initKeyboard } from "./modules/keyboard";
 import { initSectionShortcuts } from "./modules/sectionShortcuts";
-import {
-  initLinksSearch,
-  initLinks,
-  renderLinks,
-  resetLinksQuery,
-} from "./modules/links";
+import { initLinksSearch, initLinks, renderLinks, resetLinksQuery } from "./modules/links";
 import { initTodos, renderTodos } from "./modules/todos";
 import { initTodosView } from "./modules/todosView";
 import { initNotes, renderNotes } from "./modules/notes";
