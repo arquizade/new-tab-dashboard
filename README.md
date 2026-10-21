@@ -127,8 +127,18 @@ We welcome contributions from the developer community. To maintain clean code an
 * **Feature Branches:** Create a branch for your task: `feature/your-feature-name` or `bugfix/issue-name`.
 * **Release Isolation:** Official release preparation happens in a dedicated branch format (e.g., `release/v0.1`), which is then explicitly tagged to mark immutable historical milestones (e.g., `v0.1.0`).
 
+### Versioning & Changelog
+* **Versioning:** Releases follow [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). The version in `manifest.json` and `package.json` must match the Git tag for every release, and `manifest.json` is the source of truth for the packaged extension.
+* **Changelog:** Every notable change is recorded in [CHANGELOG.md](./CHANGELOG.md), which follows the [Keep a Changelog](https://keepachangelog.com/) format (Added / Changed / Fixed / Removed).
+
 ### AI-Assisted Contributions
 If you are developing features using an AI editor or coding agent (such as Cursor, Copilot, or Windsurf), please ensure your tooling reads the instructions outlined in our [AGENTS.md](./AGENTS.md) file to prevent architectural regressions or privacy violations.
+
+### Commit Messages
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
+`<type>[(scope)]: <summary>`, e.g. `fix(links): resolve favicon rendering`.
+The full list of accepted types and rules lives in
+[AGENTS.md](./AGENTS.md#commit-message-convention-conventional-commits).
 
 ### Pull Request Checklist
 1. Run `bun run typecheck` and confirm zero TypeScript errors.

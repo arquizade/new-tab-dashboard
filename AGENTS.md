@@ -55,6 +55,56 @@ specific commit they asked for, nothing more (no push, no tag, no release).
 
 ---
 
+## Commit message convention: Conventional Commits
+
+Every commit message an agent proposes (see step 3 of the hard rule above) must
+follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>[(scope)][!]: <summary>
+```
+
+- **`type`** — one of the types below, lowercase.
+- **`(scope)`** — optional, kebab-case, names the area touched
+  (`links`, `notes`, `todos`, `theme`, `backup`, `release`, `agents`). Omit it
+  when the change is broad. Use it the way this repo already does:
+  `fix(links): …`, `chore(release): …`, `docs(agents): …`.
+- **`summary`** — imperative mood, lowercase after the colon, no trailing
+  period, ≤ 72 characters total.
+- **`!`** — after the type or scope for a breaking change, plus a
+  `BREAKING CHANGE:` footer explaining the migration.
+- **One type per commit.** If a change spans several types, split it into
+  separate commits.
+
+| Type | When to use | Example |
+| --- | --- | --- |
+| `feat` | A new feature for the user | `feat: add reminder toggle for notes` |
+| `fix` | A bug fix | `fix: resolve favicon crash on new tab` |
+| `chore` | Maintenance, tooling, or config that doesn't touch source or tests | `chore: update dependencies to latest version` |
+| `docs` | Documentation only (`README`, `AGENTS.md`, `CHANGELOG`) | `docs: update API setup guide` |
+| `refactor` | Code change that neither fixes a bug nor adds a feature | `refactor: simplify storage connection logic` |
+| `style` | Formatting, whitespace, CSS tweaks — no logic change | `style: fix indentation in navbar` |
+| `test` | Adding or refactoring tests | `test: add unit tests for storage helpers` |
+| `perf` | A change that improves performance | `perf: optimize image loading speed` |
+| `ci` | CI/CD workflows or pipeline scripts | `ci: add GitHub Actions workflow for typecheck` |
+| `build` | Build system, bundler, or dependency changes | `build: add Vite configuration` |
+| `revert` | Reverting a previous commit | `revert: revert "feat: add user profile editing"` |
+
+Notes specific to this repo:
+
+- `build` covers `vite.config.ts`, `tsconfig.json`, `postcss` and Tailwind setup;
+  `chore` covers `manifest.json` permission or version edits and `package.json`
+  scripts.
+- A commit type does not replace the changelog: user-visible `feat` / `fix` /
+  `perf` commits still need a matching `CHANGELOG.md` entry (Keep a Changelog
+  sections: Added / Fixed / Changed / Removed).
+- This repo currently has **no test suite and no CI**, so `test` and `ci` are
+  reserved for when those are introduced — don't invent a test file just to
+  have something to commit.
+- Never write messages like `Update README`, `fix stuff`, or `wip`.
+
+---
+
 ## Project facts
 
 - **What this is:** Chrome extension (Manifest V3) that overrides the new-tab
