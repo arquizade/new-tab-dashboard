@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "New Tab Dashboard",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "A minimal productivity dashboard for your new tab.",
   "chrome_url_overrides": {
     "newtab": "index.html"
@@ -13,7 +13,7 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' chrome-extension: https://www.google.com https://*.google.com https://*.googleusercontent.com data:; object-src 'self'; default-src 'self'"
   },
-  "permissions": ["storage", "tabs", "favicon"],
+  "permissions": ["storage", "tabs", "favicon", "alarms", "notifications"],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
