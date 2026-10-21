@@ -6,7 +6,7 @@ dist_dir = "dist"
 output_zip = "extension.zip"
 
 if not os.path.isdir(dist_dir):
-    print(f'Error: "{dist_dir}" folder not found. Run npm run build first.')
+    print(f'Error: "{dist_dir}" folder not found. Run bun run build first.')
     sys.exit(1)
 
 if os.path.exists(output_zip):

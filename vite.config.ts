@@ -1,8 +1,13 @@
-import { defineConfig } from "vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 import tailwindcss from "@tailwindcss/vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
+  lint: {
+    jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
+    rules: { "vite-plus/prefer-vite-plus-imports": "error" },
+    options: { typeAware: true, typeCheck: true },
+  },
   server: {
     port: 5000,
     host: "0.0.0.0",
@@ -28,7 +33,7 @@ export default defineConfig({
       },
     },
   },
-  plugins: [
+  plugins: lazyPlugins(() => [
     tailwindcss(),
     viteStaticCopy({
       targets: [
@@ -36,5 +41,5 @@ export default defineConfig({
         { src: "src/icons/*", dest: "icons" },
       ],
     }),
-  ],
+  ]),
 });

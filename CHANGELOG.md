@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > regardless of the tag. This was corrected in `v0.4.0`; the tag remains the
 > source of truth for those earlier releases.
 
+## [Unreleased]
+
+### Changed
+
+- Development, build, and lint commands now run through Vite+ 1.3
+  (`vite-plus`): `bun run dev` calls `vp dev`, `bun run build` calls
+  `vp build`, and `bun run lint` runs Oxlint. Vite remains the bundler through
+  Vite+'s `@voidzero-dev/vite-plus-core` alias.
+- Bun is pinned in `package.json` as the single package manager
+  (`"packageManager": "bun@1.3.14"`); there is still only one lockfile
+  (`bun.lock`).
+
 ## [0.4.0] - 2026-10-21
 
 ### Added

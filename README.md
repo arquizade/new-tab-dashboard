@@ -31,28 +31,31 @@ A lightweight, distraction-free Chrome extension that transforms your default "N
 *   HTML5
 *   CSS3
 *   TypeScript
-*   Vite
-*   Bun
+*   Vite+ (Vite 8 + Rolldown)
+*   Bun (managed by Vite+)
 *   Chrome Extension APIs (`storage` for saving data locally)
 
-## Prerequisites
+## Toolchain (Vite+)
 
-This project uses [Bun](https://bun.sh) as the package manager and script runner.
-
-**Install Bun via Homebrew (recommended if you use Homebrew):**
+Install the [Vite+](https://viteplus.dev) CLI:
 ```bash
-brew install oven-sh/bun/bun
+curl -fsSL https://vite.plus | bash
 ```
 
-**Or install directly via the official installer:**
-```bash
-curl -fsSL https://bun.sh/install | bash
-```
+The project uses Vite+ 1.3 through the local `vite-plus` dev dependency. `vp` runs the package scripts and installs dependencies with the pinned Bun version (`"packageManager": "bun@1.3.14"`), so no separate Bun, Vite, or linter install is needed. Vite 8, Rolldown, and Oxlint all come from the toolchain.
 
-Verify the installation:
-```bash
-bun --version
-```
+| Command | Runs |
+| --- | --- |
+| `vp install` | Install dependencies through the pinned Bun version |
+| `vp run dev` | The `dev` script (`vp dev`) — Vite dev server |
+| `vp run build` | The `build` script (`tsc --noEmit && vp build`) — type check, then bundle to `dist/` |
+| `vp run preview` | The `preview` script (`vp preview`) |
+| `vp run typecheck` | The `typecheck` script (`tsc --noEmit`) |
+| `vp run lint` | The `lint` script (`vp lint`) — Oxlint |
+
+`vp run <script>` executes the matching `package.json` script; the toolchain commands (`vp dev`, `vp build`, `vp lint`) can also be run directly.
+
+`vite` stays in `package.json` as an alias to `@voidzero-dev/vite-plus-core` (see `overrides`), so plugins that import `vite` share the same instance as the toolchain. Do not add a standalone Vite dependency.
 
 ## Local Development Setup
 
@@ -64,12 +67,12 @@ cd new-tab-dashboard
 
 2. **Install dependencies:**
 ```bash
-bun install
+vp install
 ```
 
 3. **Start the dev server:**
 ```bash
-bun run dev
+vp run dev
 ```
 
 The dev server runs at `http://localhost:5000` by default.
@@ -77,33 +80,23 @@ The dev server runs at `http://localhost:5000` by default.
 ## Building for Production
 
 ```bash
-bun run build
+vp run build
 ```
 
 Output lands in the `dist/` folder. This is the folder you load into Chrome as an unpacked extension.
 
-## Type Checking
+## Type Checking & Linting
 
 ```bash
-bun run typecheck
+vp run typecheck
+vp run lint
 ```
 
-Run this before submitting a pull request to catch any TypeScript errors.
-
-## Updating Bun
-
-```bash
-bun upgrade
-```
-
-Or if installed via Homebrew:
-```bash
-brew upgrade bun
-```
+Run both before submitting a pull request. `typecheck` must report zero errors; `lint` currently reports warnings but must exit 0.
 
 ## Installation & Loading the Extension
 
-1. Run `bun run build` to generate the `dist/` folder.
+1. Run `vp run build` to generate the `dist/` folder.
 2. Open Google Chrome and navigate to `chrome://extensions/`.
 3. Enable **Developer mode** (toggle switch in the top right corner).
 4. Click **Load unpacked** in the top left corner.
@@ -141,11 +134,12 @@ The full list of accepted types and rules lives in
 [AGENTS.md](./AGENTS.md#commit-message-convention-conventional-commits).
 
 ### Pull Request Checklist
-1. Run `bun run typecheck` and confirm zero TypeScript errors.
-2. Run `bun run build` and confirm the `dist/` folder builds cleanly.
-3. Verify that your changes do **NOT** commit `.DS_Store` or cache directories (ensure your `.gitignore` is active).
-4. Test both **Light Mode** and **Dark Mode** to guarantee styling consistency.
-5. Ensure all Chrome Storage calls are completely asynchronous.
+1. Run `vp run typecheck` and confirm zero TypeScript errors.
+2. Run `vp run lint` and confirm it exits 0 without new warnings.
+3. Run `vp run build` and confirm the `dist/` folder builds cleanly.
+4. Verify that your changes do **NOT** commit `.DS_Store` or cache directories (ensure your `.gitignore` is active).
+5. Test both **Light Mode** and **Dark Mode** to guarantee styling consistency.
+6. Ensure all Chrome Storage calls are completely asynchronous.
 
 ---
 

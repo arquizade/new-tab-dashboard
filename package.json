@@ -3,10 +3,11 @@
   "version": "0.4.0",
   "description": "A lightweight, distraction-free Chrome extension that transforms your default \"New Tab\" page into a sleek, personal productivity hub.",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "vp dev",
+    "build": "tsc --noEmit && vp build",
+    "preview": "vp preview",
     "typecheck": "tsc --noEmit",
+    "lint": "vp lint",
     "zip": "bun run build && python3 scripts/zip-extension.py",
     "release": "python3 scripts/release.py"
   },
@@ -22,8 +23,13 @@
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.14",
-    "vite-plugin-static-copy": "^3.4.0"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.3.0",
+    "vite-plugin-static-copy": "^3.4.0",
+    "vite-plus": "1.3.0"
   },
-  "private": true
+  "private": true,
+  "packageManager": "bun@1.3.14",
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.3.0"
+  }
 }

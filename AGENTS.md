@@ -112,10 +112,17 @@ Notes specific to this repo:
   `chrome.storage.local`.
 - **Features:** link saving, quick notes, to-do list (list and Kanban views),
   light/dark theme, note reminders via `chrome.alarms` + `chrome.notifications`.
-- **Stack:** TypeScript + Vite 8 + Tailwind 4, bundled with Bun as the package
-  manager and script runner.
-- **Build:** `bun run build` → `dist/` (Vite is the build tool; do not replace
-  it with `Bun.serve`/HTML imports, despite the generic advice in `CLAUDE.md`).
+- **Stack:** TypeScript + Vite+ 1.3 (Vite 8 + Rolldown) + Tailwind 4. Bun is
+  the single package manager and script runner, pinned with
+  `"packageManager": "bun@1.3.14"` in `package.json`.
+- **Toolchain:** `vite-plus` is a dev dependency and owns dev/build/lint; `vite`
+  is aliased to `@voidzero-dev/vite-plus-core` through `package.json`
+  `overrides`. `vite.config.ts` imports `defineConfig`/`lazyPlugins` from
+  `vite-plus`; plugin imports stay on `vite` and resolve through that alias. Do
+  not add a second `vite`, and do not add npm/pnpm/Yarn.
+- **Build:** `bun run build` → `tsc --noEmit && vp build` → `dist/` (Vite+ is
+  the build tool; do not replace it with `Bun.serve`/HTML imports, despite the
+  generic advice in `CLAUDE.md`).
 - **Load for testing:** `chrome://extensions` → Developer mode → Load unpacked
   → select `dist/`.
 - **Manifest is the release source of truth:** `manifest.json` `version`,
@@ -185,11 +192,17 @@ Run these and report real results, not intentions:
 
 ```bash
 bun run typecheck   # tsc --noEmit, must be clean
+bun run lint        # vp lint / Oxlint, must exit 0 (existing warnings are fine)
 bun run build       # must succeed, writes dist/
 bun run zip         # optional: packages dist/ into a zip for manual install
 bun run release     # optional: build + package into release/, verify, print the
                     # publish steps for the human to run (never --run)
 ```
+
+Do not use `vp check` as the verification command: it also runs Oxfmt, and the
+repository has never been formatted with it, so it fails on ~18 pre-existing
+files. Do not run `vp fmt` across the repo unless the human asks for a
+formatting pass — it rewrites Markdown tables, `index.html`, and `style.css`.
 
 ## Style, linting, and hygiene
 
