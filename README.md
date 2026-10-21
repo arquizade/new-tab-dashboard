@@ -128,7 +128,7 @@ We welcome contributions from the developer community. To maintain clean code an
 * **Release Isolation:** Official release preparation happens in a dedicated branch format (e.g., `release/v0.1`), which is then explicitly tagged to mark immutable historical milestones (e.g., `v0.1.0`).
 
 ### AI-Assisted Contributions
-If you are developing features using an AI editor or coding agent (such as Cursor, Copilot, or Windsurf), please ensure your tooling reads the instructions outlined in our [AGENT.md](./AGENT.md) file to prevent architectural regressions or privacy violations.
+If you are developing features using an AI editor or coding agent (such as Cursor, Copilot, or Windsurf), please ensure your tooling reads the instructions outlined in our [AGENTS.md](./AGENTS.md) file to prevent architectural regressions or privacy violations.
 
 ### Pull Request Checklist
 1. Run `bun run typecheck` and confirm zero TypeScript errors.
