@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Chrome API calls and async save handlers no longer leave promise rejections
   unhandled; failures are logged instead of being dropped.
+- Note color swatches no longer use inline `style` attributes, which the
+  extension CSP blocked; colors now come from `data-color` CSS rules.
 
 ## [0.4.0] - 2026-10-21
 

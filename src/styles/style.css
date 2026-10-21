@@ -743,6 +743,26 @@
   }
 
   /* ─── Note Color Swatches ────────────────────────────────── */
+  .note-color-swatch[data-color="blue"] {
+    --swatch-color: var(--note-blue);
+  }
+
+  .note-color-swatch[data-color="green"] {
+    --swatch-color: var(--note-green);
+  }
+
+  .note-color-swatch[data-color="yellow"] {
+    --swatch-color: var(--note-yellow);
+  }
+
+  .note-color-swatch[data-color="red"] {
+    --swatch-color: var(--note-red);
+  }
+
+  .note-color-swatch[data-color="purple"] {
+    --swatch-color: var(--note-purple);
+  }
+
   .note-color-swatch {
     width: 20px;
     height: 20px;

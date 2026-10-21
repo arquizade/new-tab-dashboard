@@ -98,13 +98,7 @@ function formatReminder(iso: string): string {
  * duplicate IDs on the page.
  */
 
-const SWATCHES: { color: NoteColor; cssVar: string }[] = [
-  { color: "blue", cssVar: "var(--note-blue)" },
-  { color: "green", cssVar: "var(--note-green)" },
-  { color: "yellow", cssVar: "var(--note-yellow)" },
-  { color: "red", cssVar: "var(--note-red)" },
-  { color: "purple", cssVar: "var(--note-purple)" },
-];
+const SWATCHES: NoteColor[] = ["blue", "green", "yellow", "red", "purple"];
 
 function noteFormHtml(initial: { text: string; color: NoteColor; reminderAt?: string }): string {
   return `
@@ -133,13 +127,12 @@ function noteFormHtml(initial: { text: string; color: NoteColor; reminderAt?: st
 
       <div class="nf-color-picker flex items-center gap-2">
         ${SWATCHES.map(
-          ({ color, cssVar }) => `
+          (color) => `
           <button
             type="button"
             data-color="${color}"
             title="${color[0].toUpperCase() + color.slice(1)}"
             class="note-color-swatch${initial.color === color ? " active" : ""}"
-            style="--swatch-color: ${cssVar}"
           ></button>
         `,
         ).join("")}

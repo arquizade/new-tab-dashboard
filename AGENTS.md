@@ -185,6 +185,8 @@ new top-level script or an inline handler:
   production API keys in examples, placeholders, or fixtures.
 - Keep the extension-pages CSP in `manifest.json` narrow; add a source only
   when a feature genuinely needs it (as was done for favicons and fonts).
+- Do not add inline `style` attributes to extension pages — the CSP blocks
+  them. Use classes or `data-*` selectors in `src/styles/style.css`.
 
 ## Verification before handing work back
 
