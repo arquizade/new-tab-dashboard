@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > regardless of the tag. This was corrected in `v0.4.0`; the tag remains the
 > source of truth for those earlier releases.
 
-## [Unreleased]
+## [0.5.0] - 2026-10-27
 
 ### Added
 
@@ -29,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   stored tasks without one read as Active.
 - Version badge in the bottom-right corner of the main panel, showing the
   extension version from `manifest.json`.
+
+### Changed
+
+- Sidebar, page-header and add-form buttons now share a 36px control height;
+  the to-do bucket select matches it and leaves room for its chevron.
 
 ## [0.4.1] - 2026-10-21
 
@@ -129,6 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Committed `.DS_Store` files removed and ignored.
 
+[0.5.0]: https://github.com/arquizade/new-tab-dashboard/compare/v0.4.1...v0.5.0
 [0.4.0]: https://github.com/arquizade/new-tab-dashboard/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/arquizade/new-tab-dashboard/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/arquizade/new-tab-dashboard/compare/v0.2.2...v0.3.0
