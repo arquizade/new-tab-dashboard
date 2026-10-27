@@ -14,6 +14,12 @@ export interface Todo {
   status: TodoStatus;
 }
 
+export interface Notebook {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
 export type NoteColor = "blue" | "green" | "yellow" | "red" | "purple";
 
 export interface Note {
@@ -23,6 +29,8 @@ export interface Note {
   color: NoteColor;
   /** ISO timestamp for a one-time reminder notification, if set. */
   reminderAt?: string;
+  /** Notebook this note belongs to; absent = unfiled. */
+  notebookId?: string;
 }
 
 export interface Config {
@@ -36,6 +44,7 @@ export interface AppState {
   links: Link[];
   todos: Todo[];
   notes: Note[];
+  notebooks: Notebook[];
   config: Config;
 }
 
@@ -45,6 +54,8 @@ export interface BackupFile {
   links: Link[];
   todos: Todo[];
   notes: Note[];
+  /** Absent in backups exported before notebooks shipped. */
+  notebooks?: Notebook[];
   config: Config;
 }
 

@@ -1,5 +1,13 @@
 import { el } from "../utils/dom";
-import { state, saveLinks, saveTodos, saveNotes, saveConfig } from "../state";
+import {
+  state,
+  sanitizeNotebooks,
+  saveLinks,
+  saveTodos,
+  saveNotes,
+  saveNotebooks,
+  saveConfig,
+} from "../state";
 import { applyTheme } from "./theme";
 import { applyLinksLayout } from "./linksLayout";
 import { applyLinkOpenMode } from "./linkOpenMode";
@@ -7,6 +15,7 @@ import { applyTodosView } from "./todosView";
 import { renderLinks } from "./links";
 import { renderTodos } from "./todos";
 import { renderNotes, reconcileReminders } from "./notes";
+import { resetNotebookFilter } from "./notebooks";
 import { showToast } from "./toast";
 import type { BackupFile, StorageAdapter } from "../types";
 
@@ -37,6 +46,7 @@ function exportBackup(): void {
     links: state.links,
     todos: state.todos,
     notes: state.notes,
+    notebooks: state.notebooks,
     config: state.config,
   };
 
@@ -71,18 +81,21 @@ async function applyBackup(backup: BackupFile, storage: StorageAdapter): Promise
           : "todo",
     };
   });
+  state.notebooks = sanitizeNotebooks(backup.notebooks);
   const validNoteColors = new Set(["blue", "green", "yellow", "red", "purple"]);
   state.notes = backup.notes.map((n) => {
     const reminderAt =
       typeof n.reminderAt === "string" && !isNaN(Date.parse(n.reminderAt))
         ? n.reminderAt
         : undefined;
+    const notebookId = typeof n.notebookId === "string" && n.notebookId ? n.notebookId : undefined;
     return {
       id: n.id,
       text: n.text,
       date: n.date,
       color: validNoteColors.has(n.color as string) ? n.color : "blue",
       ...(reminderAt ? { reminderAt } : {}),
+      ...(notebookId ? { notebookId } : {}),
     };
   });
   state.config = {
@@ -96,8 +109,13 @@ async function applyBackup(backup: BackupFile, storage: StorageAdapter): Promise
     saveLinks(storage),
     saveTodos(storage),
     saveNotes(storage),
+    saveNotebooks(storage),
     saveConfig(storage),
   ]);
+
+  /* The in-memory notebook filter may point at a notebook the import
+     removed, so fall back to "All notes" and rebuild the chip row. */
+  resetNotebookFilter();
 
   applyTheme(state.config.theme);
   applyLinksLayout(state.config.linksLayout ?? "grid");

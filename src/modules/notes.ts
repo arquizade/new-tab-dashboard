@@ -4,6 +4,14 @@ import { formatDate } from "../utils/date";
 import { state, saveNotes } from "../state";
 import { registerShortcut } from "./keyboard";
 import { showToast } from "./toast";
+import {
+  FILTER_ALL,
+  FILTER_UNFILED,
+  getActiveNotebookId,
+  getNotebookFilter,
+  noteMatchesFilter,
+  resolveNotebookId,
+} from "./notebooks";
 import type { Note, NoteColor, StorageAdapter } from "../types";
 
 /* ─── Reminders (chrome.alarms) ──────────────────────────────── */
@@ -100,7 +108,23 @@ function formatReminder(iso: string): string {
 
 const SWATCHES: NoteColor[] = ["blue", "green", "yellow", "red", "purple"];
 
-function noteFormHtml(initial: { text: string; color: NoteColor; reminderAt?: string }): string {
+function notebookOptionsHtml(selectedId?: string): string {
+  const options = ['<option value="">Unfiled</option>'];
+  state.notebooks.forEach((notebook) => {
+    const selected = notebook.id === selectedId ? " selected" : "";
+    options.push(
+      `<option value="${escapeHtml(notebook.id)}"${selected}>${escapeHtml(notebook.name)}</option>`,
+    );
+  });
+  return options.join("");
+}
+
+function noteFormHtml(initial: {
+  text: string;
+  color: NoteColor;
+  reminderAt?: string;
+  notebookId?: string;
+}): string {
   return `
     <textarea
       class="nf-text w-full py-2.5 px-4 rounded-xl font-sans text-[13px] text-text-1 outline-none resize-y min-h-24 leading-[1.65] bg-bg border border-border-mid placeholder:text-text-3 focus:border-accent focus:shadow-[0_0_0_3px_var(--accent-glow)] transition-[border-color,box-shadow] duration-[180ms]"
@@ -125,17 +149,23 @@ function noteFormHtml(initial: { text: string; color: NoteColor; reminderAt?: st
         <button type="button" class="nf-clear hidden font-sans text-[13px] leading-none text-text-3 hover:text-danger cursor-pointer bg-transparent border-0 px-1 transition-colors duration-[150ms]">×</button>
       </div>
 
-      <div class="nf-color-picker flex items-center gap-2">
-        ${SWATCHES.map(
-          (color) => `
-          <button
-            type="button"
-            data-color="${color}"
-            title="${color[0].toUpperCase() + color.slice(1)}"
-            class="note-color-swatch${initial.color === color ? " active" : ""}"
-          ></button>
-        `,
-        ).join("")}
+      <div class="flex items-center gap-3 flex-wrap">
+        <select class="nf-notebook note-notebook-select" title="Notebook">
+          ${notebookOptionsHtml(initial.notebookId)}
+        </select>
+
+        <div class="nf-color-picker flex items-center gap-2">
+          ${SWATCHES.map(
+            (color) => `
+            <button
+              type="button"
+              data-color="${color}"
+              title="${color[0].toUpperCase() + color.slice(1)}"
+              class="note-color-swatch${initial.color === color ? " active" : ""}"
+            ></button>
+          `,
+          ).join("")}
+        </div>
       </div>
     </div>
 
@@ -159,6 +189,7 @@ interface FormRefs {
   btnPickerToggle: HTMLButtonElement;
   reminderInput: HTMLInputElement;
   btnClear: HTMLButtonElement;
+  notebookSelect: HTMLSelectElement;
   colorPicker: HTMLElement;
   btnSave: HTMLButtonElement;
   btnCancel: HTMLButtonElement;
@@ -168,10 +199,16 @@ interface FormInitial {
   text: string;
   color: NoteColor;
   reminderAt?: string;
+  notebookId?: string;
 }
 
 interface FormCallbacks {
-  onSave: (values: { text: string; color: NoteColor; reminderAt?: string }) => Promise<void>;
+  onSave: (values: {
+    text: string;
+    color: NoteColor;
+    reminderAt?: string;
+    notebookId?: string;
+  }) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -183,6 +220,7 @@ function wireFormControls(refs: FormRefs, initial: FormInitial, cb: FormCallback
     btnPickerToggle,
     reminderInput,
     btnClear,
+    notebookSelect,
     colorPicker,
     btnSave,
     btnCancel,
@@ -290,7 +328,12 @@ function wireFormControls(refs: FormRefs, initial: FormInitial, cb: FormCallback
       return;
     }
 
-    await cb.onSave({ text, color: selectedColor, reminderAt });
+    await cb.onSave({
+      text,
+      color: selectedColor,
+      reminderAt,
+      notebookId: notebookSelect.value || undefined,
+    });
   }
 
   btnSave.addEventListener("click", handleSave);
@@ -309,18 +352,29 @@ function wireFormControls(refs: FormRefs, initial: FormInitial, cb: FormCallback
 
 /* ─── Render ─────────────────────────────────────────────────── */
 
+function emptyMessage(): string {
+  const filter = getNotebookFilter();
+  if (filter === FILTER_UNFILED) return "No unfiled notes.";
+  if (filter === FILTER_ALL) return "No notes yet.";
+  return "No notes in this notebook.";
+}
+
 export function renderNotes(storage: StorageAdapter): void {
   const list = el("notesList");
   const empty = el("notesEmpty");
   list.innerHTML = "";
 
-  if (state.notes.length === 0) {
+  /* Newest first, inside whatever notebook filter is active. */
+  const visibleNotes = [...state.notes].reverse().filter(noteMatchesFilter);
+
+  if (visibleNotes.length === 0) {
+    empty.textContent = emptyMessage();
     empty.classList.remove("hidden");
     return;
   }
   empty.classList.add("hidden");
 
-  [...state.notes].reverse().forEach((note) => {
+  visibleNotes.forEach((note) => {
     const card = document.createElement("div");
     card.className = `note-card note-color-${note.color}`;
     renderCardView(card, note, storage);
@@ -370,10 +424,13 @@ function renderCardView(card: HTMLElement, note: Note, storage: StorageAdapter):
 
 function renderEditForm(card: HTMLElement, note: Note, storage: StorageAdapter): void {
   card.classList.add("editing");
+  const notebookId = resolveNotebookId(note.notebookId) ?? undefined;
+
   card.innerHTML = noteFormHtml({
     text: note.text,
     color: note.color,
     reminderAt: note.reminderAt,
+    notebookId,
   });
 
   const refs: FormRefs = {
@@ -383,6 +440,7 @@ function renderEditForm(card: HTMLElement, note: Note, storage: StorageAdapter):
     btnPickerToggle: card.querySelector<HTMLButtonElement>(".nf-picker-toggle")!,
     reminderInput: card.querySelector<HTMLInputElement>(".nf-reminder")!,
     btnClear: card.querySelector<HTMLButtonElement>(".nf-clear")!,
+    notebookSelect: card.querySelector<HTMLSelectElement>(".nf-notebook")!,
     colorPicker: card.querySelector<HTMLElement>(".nf-color-picker")!,
     btnSave: card.querySelector<HTMLButtonElement>(".nf-save")!,
     btnCancel: card.querySelector<HTMLButtonElement>(".nf-cancel")!,
@@ -400,13 +458,15 @@ function renderEditForm(card: HTMLElement, note: Note, storage: StorageAdapter):
 
   wireFormControls(
     refs,
-    { text: note.text, color: note.color, reminderAt: note.reminderAt },
+    { text: note.text, color: note.color, reminderAt: note.reminderAt, notebookId },
     {
-      onSave: async ({ text, color, reminderAt }) => {
+      onSave: async ({ text, color, reminderAt, notebookId: selectedNotebookId }) => {
         const target = state.notes.find((n) => n.id === note.id);
         if (target) {
           target.text = text;
           target.color = color;
+          if (selectedNotebookId) target.notebookId = selectedNotebookId;
+          else delete target.notebookId;
           /* Sync reminder alarm */
           if (reminderAt) {
             target.reminderAt = reminderAt;
@@ -446,12 +506,15 @@ export function initNotes(storage: StorageAdapter): void {
     btnPickerToggle: el("noteReminderPickerToggle"),
     reminderInput: el<HTMLInputElement>("noteReminder"),
     btnClear: el("noteReminderClear"),
+    notebookSelect: el<HTMLSelectElement>("noteNotebook"),
     colorPicker: el("noteColorPicker"),
     btnSave: el("saveNoteBtn"),
     btnCancel: el("cancelNoteBtn"),
   };
 
   function openForm(): void {
+    /* A new note starts in the notebook being viewed, if any. */
+    refs.notebookSelect.innerHTML = notebookOptionsHtml(getActiveNotebookId() ?? undefined);
     form.classList.remove("hidden");
     form.classList.add("flex");
     refs.textarea.focus();
@@ -480,13 +543,14 @@ export function initNotes(storage: StorageAdapter): void {
       refs,
       { text: "", color: "blue" },
       {
-        onSave: async ({ text, color, reminderAt }) => {
+        onSave: async ({ text, color, reminderAt, notebookId }) => {
           const id = genId();
           state.notes.push({
             id,
             text,
             date: new Date().toISOString(),
             color,
+            ...(notebookId ? { notebookId } : {}),
             ...(reminderAt ? { reminderAt } : {}),
           });
           try {

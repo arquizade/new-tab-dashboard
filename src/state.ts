@@ -1,4 +1,4 @@
-import type { AppState, Config, Link, Note, StorageAdapter, Todo } from "./types";
+import type { AppState, Config, Link, Notebook, Note, StorageAdapter, Todo } from "./types";
 
 /* ─── Storage Keys ───────────────────────────────────────────── */
 
@@ -6,6 +6,7 @@ const KEYS = {
   links: "ntd-links",
   todos: "ntd-todos",
   notes: "ntd-notes",
+  notebooks: "ntd-notebooks",
   config: "ntd-config",
 } as const;
 
@@ -50,14 +51,46 @@ function migrateNotes(rawNotes: unknown[]): Note[] {
       typeof n.reminderAt === "string" && !isNaN(Date.parse(n.reminderAt))
         ? n.reminderAt
         : undefined;
+    const notebookId =
+      typeof n.notebookId === "string" && n.notebookId ? n.notebookId : undefined;
     return {
       id: n.id ?? "",
       text: n.text ?? "",
       date: n.date ?? new Date().toISOString(),
       color,
       ...(reminderAt ? { reminderAt } : {}),
+      ...(notebookId ? { notebookId } : {}),
     };
   });
+}
+
+/**
+ * Drops entries that cannot be rendered (missing id or name) and any
+ * duplicate ids, so the chip row and note filters stay consistent.
+ * Shared with backup import.
+ */
+export function sanitizeNotebooks(rawNotebooks: unknown): Notebook[] {
+  if (!Array.isArray(rawNotebooks)) return [];
+
+  const seen = new Set<string>();
+  const notebooks: Notebook[] = [];
+
+  rawNotebooks.forEach((raw) => {
+    if (typeof raw !== "object" || raw === null) return;
+    const nb = raw as Partial<Notebook>;
+    if (typeof nb.id !== "string" || !nb.id || seen.has(nb.id)) return;
+    const name = typeof nb.name === "string" ? nb.name.trim() : "";
+    if (!name) return;
+
+    seen.add(nb.id);
+    notebooks.push({
+      id: nb.id,
+      name,
+      createdAt: typeof nb.createdAt === "string" ? nb.createdAt : new Date().toISOString(),
+    });
+  });
+
+  return notebooks;
 }
 
 /* ─── State Singleton ────────────────────────────────────────── */
@@ -66,22 +99,25 @@ export const state: AppState = {
   links: [],
   todos: [],
   notes: [],
+  notebooks: [],
   config: { ...DEFAULT_CONFIG },
 };
 
 /* ─── Load ───────────────────────────────────────────────────── */
 
 export async function loadState(storage: StorageAdapter): Promise<void> {
-  const [links, todos, notes, config] = await Promise.all([
+  const [links, todos, notes, notebooks, config] = await Promise.all([
     storage.get<Link[]>(KEYS.links),
     storage.get<Todo[]>(KEYS.todos),
     storage.get<Note[]>(KEYS.notes),
+    storage.get<Notebook[]>(KEYS.notebooks),
     storage.get<Config>(KEYS.config),
   ]);
 
   state.links = links ?? [];
   state.todos = migrateTodos(todos ?? []);
   state.notes = migrateNotes(notes ?? []);
+  state.notebooks = sanitizeNotebooks(notebooks);
   state.config = { ...DEFAULT_CONFIG, ...config };
 }
 
@@ -110,6 +146,15 @@ export async function saveNotes(storage: StorageAdapter): Promise<void> {
     await storage.set(KEYS.notes, state.notes);
   } catch (err) {
     console.error("[ntd] Failed to save notes:", err);
+    throw err;
+  }
+}
+
+export async function saveNotebooks(storage: StorageAdapter): Promise<void> {
+  try {
+    await storage.set(KEYS.notebooks, state.notebooks);
+  } catch (err) {
+    console.error("[ntd] Failed to save notebooks:", err);
     throw err;
   }
 }

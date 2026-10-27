@@ -788,6 +788,159 @@
     transform: scale(1.12);
   }
 
+  /* ─── Notebook Chips ─────────────────────────────────────── */
+  .notebook-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+
+  .notebook-chip-group {
+    display: inline-flex;
+    align-items: center;
+    max-width: 220px;
+    border: 1px solid var(--border-mid);
+    border-radius: 9999px;
+    background: transparent;
+    transition:
+      background 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth);
+  }
+
+  .notebook-chip-group:hover {
+    background: var(--surface-2);
+  }
+
+  .notebook-chip-group.active {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+  }
+
+  .notebook-chip {
+    min-width: 0;
+    padding: 5px 11px;
+    border: 0;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 150ms var(--ease-smooth);
+  }
+
+  .notebook-chip:hover {
+    color: var(--text-1);
+  }
+
+  .notebook-chip-group.active .notebook-chip,
+  .notebook-chip-group.active .notebook-chip:hover {
+    color: var(--accent);
+  }
+
+  .notebook-chip-icon {
+    width: 20px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--text-3);
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition:
+      opacity 150ms var(--ease-smooth),
+      color 150ms var(--ease-smooth);
+  }
+
+  .notebook-chip-group:hover .notebook-chip-icon,
+  .notebook-chip-group:focus-within .notebook-chip-icon {
+    opacity: 1;
+  }
+
+  .notebook-chip-icon.rename:hover {
+    color: var(--accent);
+  }
+
+  .notebook-chip-icon.delete:hover {
+    color: var(--danger);
+  }
+
+  .notebook-input {
+    width: 130px;
+    padding: 5px 11px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--text-1);
+  }
+
+  .notebook-input::placeholder {
+    color: var(--text-3);
+  }
+
+  .notebook-add {
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed var(--border-mid);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--text-3);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth),
+      color 150ms var(--ease-smooth);
+  }
+
+  .notebook-add:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+
+  .note-notebook-select {
+    max-width: 160px;
+    height: 28px;
+    padding: 0 8px;
+    border: 1px solid var(--border-mid);
+    border-radius: 9999px;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--text-2);
+    cursor: pointer;
+    outline: none;
+    transition:
+      border-color 150ms var(--ease-smooth),
+      color 150ms var(--ease-smooth);
+  }
+
+  .note-notebook-select:hover {
+    color: var(--text-1);
+  }
+
+  .note-notebook-select:focus {
+    border-color: var(--accent-border);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
   /* ─── Import Confirm ─────────────────────────────────────── */
   .import-confirm:not(.hidden) {
     animation: fadeUp 150ms var(--ease-smooth) both;

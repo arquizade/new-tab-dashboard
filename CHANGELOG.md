@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Notebooks: notes can be grouped into flat, user-named notebooks, with an
+  `All notes` / `Unfiled` / notebook chip filter above the notes list and a
+  notebook selector in the add and edit forms. Deleting a notebook moves its
+  notes to `Unfiled` instead of deleting them.
+- Backup export and import now carry notebooks and each note's `notebookId`;
+  older backups without notebooks still import as unfiled notes.
 - Version badge in the bottom-right corner of the main panel, showing the
   extension version from `manifest.json`.
 

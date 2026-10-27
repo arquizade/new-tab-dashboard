@@ -14,7 +14,7 @@ function getActiveSection(): HTMLElement | null {
 }
 
 function isInputActive(target: HTMLElement): boolean {
-  return target.tagName === "INPUT" || target.tagName === "TEXTAREA";
+  return target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT";
 }
 
 export function initKeyboard(): void {
