@@ -473,6 +473,13 @@
     opacity: 0.75;
   }
 
+  /* Add-form bucket picker: match the 36px form buttons and leave room
+     for the native chevron on the right. */
+  #todoBucket {
+    height: 36px;
+    padding: 0 30px 0 12px;
+  }
+
   /* ─── Todo Bucket Groups ─────────────────────────────────── */
   .todo-group {
     display: flex;
