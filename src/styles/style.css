@@ -426,6 +426,143 @@
     color: var(--danger);
   }
 
+  /* ─── Todo Bucket Filter ─────────────────────────────────── */
+  .todo-bucket-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .todo-bucket-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 11px;
+    border: 1px solid var(--border-mid);
+    border-radius: 9999px;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+    cursor: pointer;
+    transition:
+      background 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth),
+      color 150ms var(--ease-smooth);
+  }
+
+  .todo-bucket-chip:hover {
+    background: var(--surface-2);
+    color: var(--text-1);
+  }
+
+  .todo-bucket-chip.active {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+
+  .todo-bucket-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: inherit;
+    opacity: 0.75;
+  }
+
+  /* ─── Todo Bucket Groups ─────────────────────────────────── */
+  .todo-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .todo-group + .todo-group {
+    margin-top: 10px;
+  }
+
+  .todo-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-2);
+    text-align: left;
+    cursor: default;
+    transition:
+      background 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth),
+      color 150ms var(--ease-smooth);
+  }
+
+  .todo-group-header:hover {
+    color: var(--text-1);
+  }
+
+  button.todo-group-header {
+    cursor: pointer;
+  }
+
+  .todo-group-header.drag-over {
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+
+  .todo-group-chevron {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    color: var(--text-3);
+    transition: transform 150ms var(--ease-smooth);
+  }
+
+  .todo-group-header[aria-expanded="true"] .todo-group-chevron {
+    transform: rotate(90deg);
+  }
+
+  .todo-group-count {
+    min-width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    border: 1px solid var(--border-mid);
+    border-radius: 9999px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-3);
+  }
+
+  .todo-group-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .todo-bucket-select.kanban-bucket-select {
+    max-width: 92px;
+    height: 24px;
+    padding: 0 6px;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
   /* ─── Status Pill ────────────────────────────────────────── */
   .status-pill {
     flex-shrink: 0;
@@ -915,7 +1052,8 @@
     color: var(--accent);
   }
 
-  .note-notebook-select {
+  .note-notebook-select,
+  .todo-bucket-select {
     max-width: 160px;
     height: 28px;
     padding: 0 8px;
@@ -932,11 +1070,13 @@
       color 150ms var(--ease-smooth);
   }
 
-  .note-notebook-select:hover {
+  .note-notebook-select:hover,
+  .todo-bucket-select:hover {
     color: var(--text-1);
   }
 
-  .note-notebook-select:focus {
+  .note-notebook-select:focus,
+  .todo-bucket-select:focus {
     border-color: var(--accent-border);
     box-shadow: 0 0 0 3px var(--accent-glow);
   }

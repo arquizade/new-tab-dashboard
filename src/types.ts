@@ -8,10 +8,14 @@ export interface Link {
 
 export type TodoStatus = "todo" | "inProgress" | "review" | "done";
 
+/** A shelf beside the status pipeline; absent = "active". */
+export type TodoBucket = "active" | "backlog" | "parked";
+
 export interface Todo {
   id: string;
   text: string;
   status: TodoStatus;
+  bucket?: TodoBucket;
 }
 
 export interface Notebook {

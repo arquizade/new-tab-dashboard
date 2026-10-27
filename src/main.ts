@@ -9,6 +9,7 @@ import { initKeyboard } from "./modules/keyboard";
 import { initSectionShortcuts } from "./modules/sectionShortcuts";
 import { initLinksSearch, initLinks, renderLinks, resetLinksQuery } from "./modules/links";
 import { initTodos, renderTodos } from "./modules/todos";
+import { initTodoBuckets } from "./modules/todosBuckets";
 import { initTodosView } from "./modules/todosView";
 import { initNotes, renderNotes } from "./modules/notes";
 import { initNotebooks } from "./modules/notebooks";
@@ -34,6 +35,7 @@ async function init(): Promise<void> {
   initLinks(storage);
   initTodos(storage);
   initTodosView(storage);
+  initTodoBuckets(() => renderTodos(storage));
   initNotes(storage);
   initNotebooks(storage, () => renderNotes(storage));
 

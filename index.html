@@ -525,6 +525,9 @@
           </div>
         </header>
 
+        <!-- Bucket filter -->
+        <div id="todoBucketBar" class="todo-bucket-bar"></div>
+
         <!-- Add todo form -->
         <div
           id="formTodo"
@@ -537,7 +540,12 @@
             placeholder="What needs doing?"
             class="w-full py-2.5 px-4 rounded-xl font-sans text-[13px] text-text-1 outline-none bg-bg border border-border-mid placeholder:text-text-3 focus:border-accent focus:shadow-[0_0_0_3px_var(--accent-glow)] transition-[border-color,box-shadow] duration-[180ms]"
           />
-          <div class="flex gap-2 pt-1">
+          <div class="flex items-center gap-2 pt-1">
+            <select id="todoBucket" class="todo-bucket-select" title="Bucket" aria-label="Bucket">
+              <option value="active">Active</option>
+              <option value="backlog">Backlog</option>
+              <option value="parked">Parked</option>
+            </select>
             <button
               id="saveTodoBtn"
               class="py-[9px] px-[22px] rounded-full font-sans text-[13px] font-semibold cursor-pointer border-0 bg-accent text-[#111] hover:brightness-105 hover:-translate-y-px active:translate-y-0 transition-[filter,transform] duration-[180ms]"

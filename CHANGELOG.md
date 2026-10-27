@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   notes to `Unfiled` instead of deleting them.
 - Backup export and import now carry notebooks and each note's `notebookId`;
   older backups without notebooks still import as unfiled notes.
+- To-do buckets: tasks can be shelved under Active, Backlog or Parked, with
+  multi-select filter chips above both views, grouped list sections in that
+  order, a collapsible Parked group, drag onto a group header to move a task,
+  and a per-card move select on the Kanban board. The add form has a bucket
+  select that defaults to the visible bucket.
+- Backup export and import now carry each task's `bucket`; older backups and
+  stored tasks without one read as Active.
 - Version badge in the bottom-right corner of the main panel, showing the
   extension version from `manifest.json`.
 

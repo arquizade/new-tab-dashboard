@@ -20,10 +20,12 @@ const DEFAULT_CONFIG: Config = {
 /* ─── Migration ──────────────────────────────────────────────── */
 
 const VALID_STATUSES = new Set(["todo", "inProgress", "review", "done"]);
+const VALID_BUCKETS = new Set(["backlog", "parked"]);
 
 /**
  * Older backups/storage may contain todos with a boolean `completed`
- * field instead of `status`. Normalize everything to the new shape.
+ * field instead of `status`. Normalize everything to the new shape,
+ * storing a bucket only for the non-default shelves.
  */
 function migrateTodos(rawTodos: unknown[]): Todo[] {
   return rawTodos.map((raw) => {
@@ -33,7 +35,15 @@ function migrateTodos(rawTodos: unknown[]): Todo[] {
       : t.completed
         ? "done"
         : "todo";
-    return { id: t.id ?? "", text: t.text ?? "", status };
+    const bucket = VALID_BUCKETS.has(t.bucket as string)
+      ? (t.bucket as Todo["bucket"])
+      : undefined;
+    return {
+      id: t.id ?? "",
+      text: t.text ?? "",
+      status,
+      ...(bucket ? { bucket } : {}),
+    };
   });
 }
 

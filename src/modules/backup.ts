@@ -68,9 +68,11 @@ function exportBackup(): void {
 
 async function applyBackup(backup: BackupFile, storage: StorageAdapter): Promise<void> {
   const validStatuses = new Set(["todo", "inProgress", "review", "done"]);
+  const validBuckets = new Set(["backlog", "parked"]);
   state.links = backup.links;
   state.todos = backup.todos.map((t) => {
     const raw = t as typeof t & { completed?: boolean };
+    const bucket = validBuckets.has(raw.bucket as string) ? raw.bucket : undefined;
     return {
       id: raw.id,
       text: raw.text,
@@ -79,6 +81,7 @@ async function applyBackup(backup: BackupFile, storage: StorageAdapter): Promise
         : raw.completed
           ? "done"
           : "todo",
+      ...(bucket ? { bucket } : {}),
     };
   });
   state.notebooks = sanitizeNotebooks(backup.notebooks);

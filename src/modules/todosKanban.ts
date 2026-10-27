@@ -2,7 +2,14 @@ import { el, escapeHtml } from "../utils/dom";
 import { state, saveTodos } from "../state";
 import { DRAG_HANDLE_SVG } from "../utils/drag";
 import { showToast } from "./toast";
-import type { StorageAdapter, Todo, TodoStatus } from "../types";
+import {
+  TODO_BUCKETS,
+  TODO_BUCKET_LABELS,
+  getVisibleBuckets,
+  renderTodoBucketChips,
+  todoBucket,
+} from "./todosBuckets";
+import type { StorageAdapter, Todo, TodoBucket, TodoStatus } from "../types";
 
 /* ─── Kanban Board ───────────────────────────────────────────── */
 /* Cards are dragged between the To-Do / In Progress / Review /   */
@@ -50,6 +57,13 @@ function moveTodoCard(
   return filtered;
 }
 
+function bucketOptionsHtml(todo: Todo): string {
+  return TODO_BUCKETS.map((bucket) => {
+    const selected = todoBucket(todo) === bucket ? " selected" : "";
+    return `<option value="${bucket}"${selected}>${TODO_BUCKET_LABELS[bucket]}</option>`;
+  }).join("");
+}
+
 function clearKanbanIndicators(): void {
   document
     .querySelectorAll(".kanban-card, .kanban-col-cards")
@@ -61,9 +75,12 @@ function clearKanbanIndicators(): void {
 export function renderTodoKanban(storage: StorageAdapter): void {
   const board = el("todoKanban");
   board.innerHTML = "";
+  const visibleBuckets = getVisibleBuckets();
 
   COLUMNS.forEach(({ status, label }) => {
-    const items = state.todos.filter((t) => t.status === status);
+    const items = state.todos.filter(
+      (t) => t.status === status && visibleBuckets.has(todoBucket(t)),
+    );
 
     const col = document.createElement("div");
     col.className = "kanban-col";
@@ -85,8 +102,34 @@ export function renderTodoKanban(storage: StorageAdapter): void {
       card.innerHTML = `
         ${DRAG_HANDLE_SVG}
         <span class="kanban-card-text">${escapeHtml(todo.text)}</span>
+        <select
+          class="todo-bucket-select kanban-bucket-select"
+          title="Move to bucket"
+          aria-label="Move to bucket"
+        >
+          ${bucketOptionsHtml(todo)}
+        </select>
         <button class="card-delete" data-id="${todo.id}" title="Remove">×</button>
       `;
+
+      card
+        .querySelector<HTMLSelectElement>(".kanban-bucket-select")!
+        .addEventListener("change", async (e) => {
+          const bucket = (e.target as HTMLSelectElement).value as TodoBucket;
+          const item = state.todos.find((t) => t.id === todo.id);
+          if (!item) return;
+
+          if (bucket === "active") delete item.bucket;
+          else item.bucket = bucket;
+
+          try {
+            await saveTodos(storage);
+            renderTodoKanban(storage);
+            renderTodoBucketChips();
+          } catch {
+            showToast("Failed to move task", "error");
+          }
+        });
 
       card
         .querySelector<HTMLButtonElement>(".card-delete")!
@@ -97,6 +140,7 @@ export function renderTodoKanban(storage: StorageAdapter): void {
           try {
             await saveTodos(storage);
             renderTodoKanban(storage);
+            renderTodoBucketChips();
           } catch {
             showToast("Failed to delete task", "error");
           }
