@@ -12,6 +12,7 @@ import { initTodos, renderTodos } from "./modules/todos";
 import { initTodosView } from "./modules/todosView";
 import { initNotes, renderNotes } from "./modules/notes";
 import { initBackup } from "./modules/backup";
+import { initVersion } from "./modules/version";
 
 /* ─── Boot ───────────────────────────────────────────────────── */
 
@@ -38,6 +39,7 @@ async function init(): Promise<void> {
   initKeyboard();
 
   initBackup(storage);
+  initVersion();
 
   renderLinks(storage);
   renderTodos(storage);

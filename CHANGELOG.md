@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Version badge in the bottom-right corner of the main panel, showing the
+  extension version from `manifest.json`.
+
 ## [0.4.1] - 2026-10-21
 
 ### Changed

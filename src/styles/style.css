@@ -838,6 +838,7 @@ nav#sidebar {
 
 /* Main content island */
 main#main {
+  position: relative;
   margin-left: calc(216px + 10px); /* sidebar width + left offset + gap */
   width: calc(100% - 216px - 30px);
   min-height: calc(100vh - 20px);
@@ -850,6 +851,21 @@ main#main {
   transition:
     background 180ms var(--ease-smooth),
     border-color 180ms var(--ease-smooth);
+}
+
+/* Version badge pinned to the bottom-right of the main island */
+.main-version {
+  position: absolute;
+  right: 20px;
+  bottom: 12px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.main-version span {
+  color: var(--text-3);
+  opacity: 0.8;
 }
 
 /* Each section is its own inner island panel */
