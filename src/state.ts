@@ -35,9 +35,7 @@ function migrateTodos(rawTodos: unknown[]): Todo[] {
       : t.completed
         ? "done"
         : "todo";
-    const bucket = VALID_BUCKETS.has(t.bucket as string)
-      ? (t.bucket as Todo["bucket"])
-      : undefined;
+    const bucket = VALID_BUCKETS.has(t.bucket as string) ? (t.bucket as Todo["bucket"]) : undefined;
     return {
       id: t.id ?? "",
       text: t.text ?? "",
@@ -61,8 +59,7 @@ function migrateNotes(rawNotes: unknown[]): Note[] {
       typeof n.reminderAt === "string" && !isNaN(Date.parse(n.reminderAt))
         ? n.reminderAt
         : undefined;
-    const notebookId =
-      typeof n.notebookId === "string" && n.notebookId ? n.notebookId : undefined;
+    const notebookId = typeof n.notebookId === "string" && n.notebookId ? n.notebookId : undefined;
     return {
       id: n.id ?? "",
       text: n.text ?? "",
